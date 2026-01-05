@@ -30,7 +30,6 @@ export async function apiFetch<T>(
       ...getAuthHeaders(),
       ...options.headers,
     },
-    credentials: 'include', // For cookies
   });
   return handleResponse<T>(response);
 }
