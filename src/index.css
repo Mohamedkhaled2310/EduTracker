@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* EduTracker Warm Brown Theme */
+    --background: 35 30% 95%;
+    --foreground: 25 40% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 25 40% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 25 40% 20%;
+
+    --primary: 25 35% 35%;
+    --primary-foreground: 35 30% 95%;
+
+    --secondary: 35 25% 88%;
+    --secondary-foreground: 25 40% 20%;
+
+    --muted: 35 20% 90%;
+    --muted-foreground: 25 20% 45%;
+
+    --accent: 35 60% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 72% 35%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 25 40% 20%;
+
+    --border: 35 20% 85%;
+    --input: 35 20% 85%;
+    --ring: 25 35% 35%;
+
+    --radius: 0.75rem;
+
+    /* Sidebar */
+    --sidebar-background: 25 35% 35%;
+    --sidebar-foreground: 35 30% 95%;
+    --sidebar-primary: 35 60% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 25 30% 45%;
+    --sidebar-accent-foreground: 35 30% 95%;
+    --sidebar-border: 25 30% 30%;
+    --sidebar-ring: 35 60% 50%;
+
+    /* Chart colors */
+    --chart-1: 25 35% 35%;
+    --chart-2: 35 40% 55%;
+    --chart-3: 35 60% 50%;
+    --chart-4: 25 30% 45%;
+    --chart-5: 35 25% 70%;
+  }
+
+  .dark {
+    --background: 25 30% 10%;
+    --foreground: 35 30% 95%;
+
+    --card: 25 25% 15%;
+    --card-foreground: 35 30% 95%;
+
+    --popover: 25 25% 15%;
+    --popover-foreground: 35 30% 95%;
+
+    --primary: 35 60% 50%;
+    --primary-foreground: 25 30% 10%;
+
+    --secondary: 25 25% 20%;
+    --secondary-foreground: 35 30% 95%;
+
+    --muted: 25 20% 20%;
+    --muted-foreground: 35 20% 65%;
+
+    --accent: 35 60% 50%;
+    --accent-foreground: 25 30% 10%;
+
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 25 20% 25%;
+    --input: 25 20% 25%;
+    --ring: 35 60% 50%;
+
+    --sidebar-background: 25 30% 8%;
+    --sidebar-foreground: 35 30% 95%;
+    --sidebar-primary: 35 60% 50%;
+    --sidebar-primary-foreground: 25 30% 10%;
+    --sidebar-accent: 25 25% 20%;
+    --sidebar-accent-foreground: 35 30% 95%;
+    --sidebar-border: 25 20% 15%;
+    --sidebar-ring: 35 60% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    direction: rtl;
+  }
+
+  body {
+    @apply bg-background text-foreground font-tajawal;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
