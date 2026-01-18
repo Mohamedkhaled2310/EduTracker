@@ -77,28 +77,35 @@ export default function Index() {
     value: item.average,
   })) || [];
 // console.log("attendanceChartData",attendanceChartData);
+  const years = Array.from({ length: 11 }, (_, i) => 2023 + i);
 
   return (
     <DashboardLayout>
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <select className="bg-card border border-border rounded-lg px-4 py-2 text-sm">
-              <option>Term 1</option>
-              <option>Term 2</option>
-            </select>
-            <select className="bg-card border border-border rounded-lg px-4 py-2 text-sm">
-              <option>2024 - 2025</option>
-              <option>2023 - 2024</option>
-            </select>
-          </div>
+
           <div className="text-right">
             <h1 className="text-2xl font-bold text-foreground">مدرسة المستقبل - الحلقة الأولى</h1>
             <p className="text-muted-foreground">
               لوحة القيادة المدرسية - بإشراف: <span className="text-accent">البازية البلوشي</span>
             </p>
           </div>
+
+          <div className="flex items-center gap-3">
+            <select className="bg-card border border-border rounded-lg px-4 py-2 text-sm">
+              <option>Term 1</option>
+              <option>Term 2</option>
+            </select>
+            <select className="bg-card border border-border rounded-lg px-4 py-2 text-sm">
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year} - {year + 1}
+                </option>
+              ))}
+            </select>
+          </div>
+
         </div>
 
         <div className="flex h-2 rounded-full overflow-hidden">

@@ -179,17 +179,22 @@ export default function AttendancePage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-right py-3 px-4 text-muted-foreground font-medium">الحالة</th>
-                  <th className="text-right py-3 px-4 text-muted-foreground font-medium">وقت الدخول</th>
+                  <th className="text-right py-3 px-4 text-muted-foreground font-medium">اسم الطالب</th>
                   <th className="text-right py-3 px-4 text-muted-foreground font-medium">الصف</th>
                   <th className="text-right py-3 px-4 text-muted-foreground font-medium">رقم الطالب</th>
-                  <th className="text-right py-3 px-4 text-muted-foreground font-medium">اسم الطالب</th>
+                  <th className="text-right py-3 px-4 text-muted-foreground font-medium">وقت الدخول</th>
+                  <th className="text-right py-3 px-4 text-muted-foreground font-medium">الحالة</th>
                 </tr>
               </thead>
               <tbody>
                 {existingAttendance.length > 0 ? (
                   existingAttendance.map((record) => (
                     <tr key={record.id} className="border-b border-border last:border-0">
+                      <td className="py-4 px-4 text-foreground font-medium">{record.studentName}</td>
+                      <td className="py-4 px-4 text-muted-foreground">{selectedGrade || '-'}</td>
+                      <td className="py-4 px-4 text-foreground">{record.studentId}</td>
+                      <td className="py-4 px-4 text-muted-foreground">{record.checkInTime || '-'}</td>
+
                       <td className="py-4 px-4">
                         <div className="flex gap-2">
                           <button
@@ -224,10 +229,7 @@ export default function AttendancePage() {
                           </button>
                         </div>
                       </td>
-                      <td className="py-4 px-4 text-muted-foreground">{record.checkInTime || '-'}</td>
-                      <td className="py-4 px-4 text-muted-foreground">{selectedGrade || '-'}</td>
-                      <td className="py-4 px-4 text-foreground">{record.studentId}</td>
-                      <td className="py-4 px-4 text-foreground font-medium">{record.studentName}</td>
+
                     </tr>
                   ))
                 ) : students.length > 0 ? (

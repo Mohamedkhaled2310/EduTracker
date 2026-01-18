@@ -1,5 +1,13 @@
 import { apiFetch } from './config';
-import type { ApiResponse, Teacher, TeacherDetails, CreateTeacherRequest } from './types';
+import type {
+  ApiResponse,
+  Teacher,
+  TeacherDetails,
+  CreateTeacherRequest,
+  TeacherSupportRecord,
+  CreateSupportRecordRequest,
+  TeacherOverviewStats
+} from './types';
 
 interface GetTeachersParams {
   department?: string;
@@ -11,7 +19,7 @@ export const teachersApi = {
     const searchParams = new URLSearchParams();
     if (params.department) searchParams.append('department', params.department);
     if (params.status) searchParams.append('status', params.status);
-    
+
     const queryString = searchParams.toString();
     return apiFetch<ApiResponse<Teacher[]>>(`/teachers${queryString ? `?${queryString}` : ''}`);
   },
@@ -32,5 +40,20 @@ export const teachersApi = {
       method: 'PUT',
       body: JSON.stringify(data),
     });
+  },
+
+  createSupportRecord: async (teacherId: number, data: CreateSupportRecordRequest): Promise<ApiResponse<TeacherSupportRecord>> => {
+    return apiFetch(`/teachers/${teacherId}/support-records`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  getSupportRecords: async (teacherId: number): Promise<ApiResponse<TeacherSupportRecord[]>> => {
+    return apiFetch(`/teachers/${teacherId}/support-records`);
+  },
+
+  getStatistics: async (): Promise<ApiResponse<TeacherOverviewStats>> => {
+    return apiFetch('/teachers/statistics/overview');
   },
 };

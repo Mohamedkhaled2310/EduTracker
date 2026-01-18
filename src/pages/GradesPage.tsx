@@ -108,6 +108,11 @@ const handleSubmit = (e: React.FormEvent) => {
     <DashboardLayout>
       <div className="mb-8">
         <div className="flex items-center justify-between">
+          <div className="text-right">
+            <h1 className="text-2xl font-bold text-foreground">سجل الدرجات</h1>
+            <p className="text-muted-foreground">تسجيل ومتابعة درجات الطلاب</p>
+          </div>
+
             <Dialog
               open={isDialogOpen}
               onOpenChange={(open) => {
@@ -233,10 +238,7 @@ const handleSubmit = (e: React.FormEvent) => {
               </form>
             </DialogContent>
           </Dialog>
-          <div className="text-right">
-            <h1 className="text-2xl font-bold text-foreground">سجل الدرجات</h1>
-            <p className="text-muted-foreground">تسجيل ومتابعة درجات الطلاب</p>
-          </div>
+
         </div>
       </div>
 

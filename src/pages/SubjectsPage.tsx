@@ -226,7 +226,7 @@ export default function SubjectsPage() {
             </DialogContent>
           </Dialog>
           <div className="text-right">
-            <h1 className="text-2xl font-bold text-foreground">إدارة المواد الدراسية</h1>
+            <h1 className="text-2xl font-bold text-foreground">عالم المعرفة الذكي</h1>
             <p className="text-muted-foreground">إضافة وتعديل المواد الدراسية</p>
           </div>
         </div>
@@ -235,15 +235,6 @@ export default function SubjectsPage() {
       {/* Filters */}
       <div className="bg-card rounded-xl p-6 shadow-sm border border-border mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="بحث عن مادة..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pr-10"
-            />
-          </div>
           <Select value={filterGrade} onValueChange={setFilterGrade}>
             <SelectTrigger>
               <SelectValue placeholder="تصفية حسب المرحلة" />
@@ -256,6 +247,16 @@ export default function SubjectsPage() {
               <SelectItem value="Fourth Grade">الصف الرابع</SelectItem>
             </SelectContent>
           </Select>
+          <div className="relative">
+            <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="بحث عن مادة..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pr-10"
+            />
+          </div>
+
         </div>
       </div>
 

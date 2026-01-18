@@ -164,6 +164,43 @@ export interface CreateTeacherRequest {
   classes: number[];
 }
 
+export interface TeacherSupportRecord {
+  id: string;
+  teacherId: string;
+  visitDate: string;
+  supportPlan: string;
+  training: string;
+  notes: string;
+  createdBy?: {
+    id: string;
+    name: string;
+  };
+  createdAt: string;
+}
+
+export interface CreateSupportRecordRequest {
+  visitDate: string;
+  supportPlan: string;
+  training: string;
+  notes: string;
+}
+
+export interface TeacherOverviewStats {
+  averageStudentImprovement: number;
+  subjectsNeedingSupport: Array<{
+    name: string;
+    averageGrade: number;
+    teacherCount: number;
+  }>;
+  teachersRequiringSupport: Array<{
+    id: string;
+    name: string;
+    department: string;
+    supportRecordCount: number;
+    averageClassPerformance: number;
+  }>;
+}
+
 // ============= Attendance Types =============
 export interface AttendanceRecord {
   id: number;

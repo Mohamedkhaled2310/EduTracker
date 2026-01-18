@@ -199,17 +199,13 @@ export function StudentProfileModal({ student, open, onOpenChange }: StudentProf
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden p-0">
         {/* Header */}
         <div className="bg-primary p-6 text-primary-foreground relative">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute left-4 top-4 text-primary-foreground hover:bg-primary-foreground/20"
-            onClick={() => onOpenChange(false)}
-          >
-            <X className="w-5 h-5" />
-          </Button>
 
-          <div className="flex items-center gap-4 justify-end">
+
+          <div className="flex items-center gap-4 justify-start">
             <div className="text-right">
+            <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center">
+              <span className="text-primary font-bold text-2xl">{student.avatar}</span>
+            </div>
               <h2 className="text-xl font-bold">{student.name}</h2>
               <p className="text-primary-foreground/80 text-sm">{student.nameEn}</p>
               <div className="flex items-center gap-2 mt-2 justify-end">
@@ -224,9 +220,7 @@ export function StudentProfileModal({ student, open, onOpenChange }: StudentProf
                 </Badge>
               </div>
             </div>
-            <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center">
-              <span className="text-primary font-bold text-2xl">{student.avatar}</span>
-            </div>
+
           </div>
         </div>
 
