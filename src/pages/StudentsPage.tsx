@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { StudentCard } from "@/components/dashboard/StudentCard";
 import { StudentProfileModal } from "@/components/students/StudentProfileModal";
 import { ParentCommunication } from "@/components/students/ParentCommunication";
-import { Users, Smile, AlertCircle, MessageCircle, Search, Filter } from "lucide-react";
+import { StudentFilters } from "@/components/students/StudentFilters";
+import { ClassGroup } from "@/components/students/ClassGroup";
+import { Users, Smile, AlertCircle, MessageCircle, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -27,48 +29,57 @@ export default function StudentsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [selectedGrade, setSelectedGrade] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   // Fetch students from API
   const { data: studentsData, isLoading } = useQuery({
-    queryKey: ['students', page, searchQuery],
-    queryFn: () => studentsApi.getAll({ page, limit: 20, search: searchQuery, status: 'active' }),
+    queryKey: ['students', page, searchQuery, selectedGrade, selectedCategory],
+    queryFn: () => studentsApi.getAll({
+      page,
+      limit: 100,
+      search: searchQuery,
+      status: 'active',
+      grade: selectedGrade !== 'all' ? selectedGrade : undefined,
+      category: selectedCategory !== 'all' ? selectedCategory : undefined
+    }),
   });
 
 
 
   const { data: positiveData } = useQuery({
-  queryKey: ["positive-behavior"],
-  queryFn: () => behaviorApi.getPositiveBehaviors(),
-});
+    queryKey: ["positive-behavior"],
+    queryFn: () => behaviorApi.getPositiveBehaviors(),
+  });
 
-const positiveBehaviors =
-  positiveData?.data?.map(item => ({
-    name: item.studentName,
-    type: item.type,
-    desc: item.description,
-    date: item.date,
-    currentScore: `+${item.currentScore}`,
-  })) || [];
+  const positiveBehaviors =
+    positiveData?.data?.map(item => ({
+      name: item.studentName,
+      type: item.type,
+      desc: item.description,
+      date: item.date,
+      currentScore: `+${item.currentScore}`,
+    })) || [];
 
-const { data: violationsData } = useQuery({
-  queryKey: ["violations"],
-  queryFn: () =>
-    behaviorApi.getViolations({
-      limit: 5,
-      status: "pending",
-    }),
-});
+  const { data: violationsData } = useQuery({
+    queryKey: ["violations"],
+    queryFn: () =>
+      behaviorApi.getViolations({
+        limit: 5,
+        status: "pending",
+      }),
+  });
 
-const violations =
-  violationsData?.data?.violations.map(v => ({
-    name: v.studentName,
-    type: v.type,
-    desc: v.description,
-    date: v.date,
-    reporter: v.reportedBy,
-    status: v.status === "pending" ? "مفتوح" : "مغلق",
-    currentScore: v.severity === "high" ? "-3" : "-1",
-  })) || [];
+  const violations =
+    violationsData?.data?.violations.map(v => ({
+      name: v.studentName,
+      type: v.type,
+      desc: v.description,
+      date: v.date,
+      reporter: v.reportedBy,
+      status: v.status === "pending" ? "مفتوح" : "مغلق",
+      currentScore: v.severity === "high" ? "-3" : "-1",
+    })) || [];
 
 
   const students = studentsData?.data?.students?.map(student => ({
@@ -82,8 +93,38 @@ const violations =
     rating: Math.round(student.behaviorScore / 25),
     avatar: student.name.charAt(0),
     grade: student.grade,
-    section: student.class,
+    section: student.section,
+    classTeacher: student.classTeacher,
   })) || [];
+
+  // Group students by class when filters are active
+  const groupedStudents = useMemo(() => {
+    if (selectedGrade === 'all' && selectedCategory === 'all') {
+      return null; // Don't group if no filters
+    }
+
+    const groups = new Map<string, typeof students>();
+    students.forEach(student => {
+      const key = `${student.grade}-${student.section}`;
+      if (!groups.has(key)) {
+        groups.set(key, []);
+      }
+      groups.get(key)!.push(student);
+    });
+
+    return Array.from(groups.entries()).map(([key, students]) => ({
+      grade: students[0].grade || 'غير محدد',
+      section: students[0].section || 'غير محدد',
+      classTeacher: students[0].classTeacher || 'غير محدد',
+      students
+    }));
+  }, [students, selectedGrade, selectedCategory]);
+
+  const handleClearFilters = () => {
+    setSelectedGrade('all');
+    setSelectedCategory('all');
+    setPage(1);
+  };
 
   const handleStudentClick = (student: any) => {
     setSelectedStudent(student);
@@ -93,8 +134,8 @@ const violations =
   return (
     <DashboardLayout>
       <div className="mb-8">
-        <div className="flex items-center justify-end gap-3 mb-2">
-          <h1 className="text-2xl font-bold text-foreground">لوحة شؤون الطلبة</h1>
+        <div className="flex items-center justify-start gap-3 mb-2">
+          <h1 className="text-2xl font-bold text-foreground text-right">لوحة شؤون الطلبة</h1>
         </div>
         <p className="text-muted-foreground text-right">
           متابعة السلوك والحضور - بإشراف: <span className="text-accent">البازية البلوشي</span>
@@ -103,22 +144,22 @@ const violations =
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6 justify-end">
-        <Button 
-          variant={activeTab === "communication" ? "default" : "outline"} 
+        <Button
+          variant={activeTab === "communication" ? "default" : "outline"}
           size="sm"
           onClick={() => setActiveTab("communication")}
         >
           تواصل أولياء الأمور
         </Button>
-        <Button 
-          variant={activeTab === "directory" ? "default" : "secondary"} 
+        <Button
+          variant={activeTab === "directory" ? "default" : "secondary"}
           size="sm"
           onClick={() => setActiveTab("directory")}
         >
           دليل الطلاب
         </Button>
-        <Button 
-          variant={activeTab === "overview" ? "default" : "outline"} 
+        <Button
+          variant={activeTab === "overview" ? "default" : "outline"}
           size="sm"
           onClick={() => setActiveTab("overview")}
         >
@@ -130,7 +171,7 @@ const violations =
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard icon={Users} label="إجمالي الطلاب" value={studentsData?.data?.pagination?.total?.toString() || "0"} trend="0.5%-" trendType="negative" />
         <StatCard icon={Smile} label="السلوكيات الإيجابية" value="24" trend="pts 120+" trendType="positive" />
-        <StatCard icon={AlertCircle} label="المخالفات السلوكية" value={violationsData?.data?.stats?.pending?.toString() || "0"} trend={`الإجمالي ${violationsData?.data?.stats?.total || 0}`} trendType="negative"/>
+        <StatCard icon={AlertCircle} label="المخالفات السلوكية" value={violationsData?.data?.stats?.pending?.toString() || "0"} trend={`الإجمالي ${violationsData?.data?.stats?.total || 0}`} trendType="negative" />
         <StatCard icon={MessageCircle} label="الرسائل" value="2" />
       </div>
 
@@ -209,33 +250,49 @@ const violations =
             <div className="flex items-center gap-3">
               <div className="relative">
                 <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <Input 
-                  placeholder="بحث عن طالب..." 
-                  className="pr-10 w-64" 
+                <Input
+                  placeholder="بحث عن طالب..."
+                  className="pr-10 w-64"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Button variant="outline" size="sm" className="gap-2">
-                <Filter className="w-4 h-4" />
-                تصفية القوائم
-              </Button>
+              <StudentFilters
+                selectedGrade={selectedGrade}
+                selectedCategory={selectedCategory}
+                onGradeChange={setSelectedGrade}
+                onCategoryChange={setSelectedCategory}
+                onClearFilters={handleClearFilters}
+              />
             </div>
             <h3 className="text-lg font-bold text-foreground">دليل الطلاب</h3>
           </div>
-          
+
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {[...Array(8)].map((_, i) => (
                 <Skeleton key={i} className="h-40 rounded-xl" />
               ))}
             </div>
+          ) : groupedStudents ? (
+            <div className="space-y-4">
+              {groupedStudents.map((group, index) => (
+                <ClassGroup
+                  key={`${group.grade}-${group.section}-${index}`}
+                  grade={group.grade}
+                  section={group.section}
+                  classTeacher={group.classTeacher}
+                  students={group.students}
+                  onStudentClick={handleStudentClick}
+                />
+              ))}
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {students.map((student) => (
-                <StudentCard 
-                  key={student.id} 
-                  student={student} 
+                <StudentCard
+                  key={student.id}
+                  student={student}
                   onClick={() => handleStudentClick(student)}
                 />
               ))}
@@ -270,9 +327,9 @@ const violations =
       )}
 
       {/* Student Profile Modal */}
-      <StudentProfileModal 
-        student={selectedStudent} 
-        open={isModalOpen} 
+      <StudentProfileModal
+        student={selectedStudent}
+        open={isModalOpen}
         onOpenChange={setIsModalOpen}
       />
     </DashboardLayout>

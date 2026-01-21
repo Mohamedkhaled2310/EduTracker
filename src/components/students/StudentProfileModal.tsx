@@ -203,9 +203,9 @@ export function StudentProfileModal({ student, open, onOpenChange }: StudentProf
 
           <div className="flex items-center gap-4 justify-start">
             <div className="text-right">
-            <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center">
-              <span className="text-primary font-bold text-2xl">{student.avatar}</span>
-            </div>
+              <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center">
+                <span className="text-primary font-bold text-2xl">{student.avatar}</span>
+              </div>
               <h2 className="text-xl font-bold">{student.name}</h2>
               <p className="text-primary-foreground/80 text-sm">{student.nameEn}</p>
               <div className="flex items-center gap-2 mt-2 justify-end">
@@ -248,33 +248,106 @@ export function StudentProfileModal({ student, open, onOpenChange }: StudentProf
           <div className="p-6 overflow-y-auto max-h-[50vh]">
             {/* Profile Tab */}
             <TabsContent value="profile" className="mt-0">
-              <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-6">
+                {/* Student Information */}
                 <div className="bg-muted/30 rounded-xl p-5 border border-border">
-                  <h3 className="text-right font-bold text-foreground mb-4">الملف الشخصي</h3>
-                  <div className="space-y-3 text-right">
+                  <h3 className="text-right font-bold text-foreground mb-4">المعلومات الشخصية</h3>
+                  <div className="grid grid-cols-2 gap-4 text-right">
                     <div className="flex justify-between">
-                      <span className="font-medium">{student.grade || "1"}</span>
+                      <span className="font-medium">{student.grade || "غير محدد"}</span>
                       <span className="text-muted-foreground">الصف</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="font-medium">{student.section || "A"}</span>
+                      <span className="font-medium">{student.section || "غير محدد"}</span>
                       <span className="text-muted-foreground">الشعبة</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="font-medium">{student.studentId}</span>
-                      <span className="text-muted-foreground">الرقم</span>
+                      <span className="text-muted-foreground">الرقم الطلابي</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">{student.attendance}%</span>
+                      <span className="text-muted-foreground">نسبة الحضور</span>
                     </div>
                   </div>
                 </div>
 
+                {/* Parent/Guardian Information */}
                 <div className="bg-muted/30 rounded-xl p-5 border border-border">
-                  <h3 className="text-right font-bold text-foreground mb-4">Summary</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Attendance</span>
-                      <span className="text-primary font-bold">{student.attendance}%</span>
+                  <h3 className="text-right font-bold text-foreground mb-4">معلومات ولي الأمر</h3>
+                  <div className="space-y-4">
+                    {/* Father Information */}
+                    <div className="border-b border-border pb-3">
+                      <h4 className="text-right font-semibold text-accent mb-2">معلومات الأب</h4>
+                      <div className="grid grid-cols-2 gap-3 text-right text-sm">
+                        <div className="flex justify-between">
+                          <span className="font-medium">محمد أحمد</span>
+                          <span className="text-muted-foreground">الاسم</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium" dir="ltr">+971 50 123 4567</span>
+                          <span className="text-muted-foreground">الهاتف</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium text-xs">father@example.com</span>
+                          <span className="text-muted-foreground">البريد الإلكتروني</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">مهندس</span>
+                          <span className="text-muted-foreground">المهنة</span>
+                        </div>
+                      </div>
                     </div>
-                    <Progress value={student.attendance} className="h-2" />
+
+                    {/* Mother Information */}
+                    <div className="border-b border-border pb-3">
+                      <h4 className="text-right font-semibold text-accent mb-2">معلومات الأم</h4>
+                      <div className="grid grid-cols-2 gap-3 text-right text-sm">
+                        <div className="flex justify-between">
+                          <span className="font-medium">فاطمة علي</span>
+                          <span className="text-muted-foreground">الاسم</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium" dir="ltr">+971 50 765 4321</span>
+                          <span className="text-muted-foreground">الهاتف</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium text-xs">mother@example.com</span>
+                          <span className="text-muted-foreground">البريد الإلكتروني</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">معلمة</span>
+                          <span className="text-muted-foreground">المهنة</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Emergency Contact */}
+                    <div className="text-right text-sm">
+                      <div className="flex justify-between">
+                        <span className="font-medium" dir="ltr">+971 50 999 8888</span>
+                        <span className="text-muted-foreground">رقم الطوارئ</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Medical Information */}
+                <div className="bg-muted/30 rounded-xl p-5 border border-border">
+                  <h3 className="text-right font-bold text-foreground mb-4">المعلومات الطبية</h3>
+                  <div className="space-y-3 text-right text-sm">
+                    <div className="flex justify-between">
+                      <span className="font-medium">O+</span>
+                      <span className="text-muted-foreground">فصيلة الدم</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">لا يوجد</span>
+                      <span className="text-muted-foreground">الحساسية</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">لا يوجد</span>
+                      <span className="text-muted-foreground">الحالات الطبية</span>
+                    </div>
                   </div>
                 </div>
               </div>

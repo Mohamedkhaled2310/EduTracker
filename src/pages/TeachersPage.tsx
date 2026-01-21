@@ -51,6 +51,10 @@ export default function TeachersPage() {
     <DashboardLayout>
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-foreground">أداء المعلمين</h1>
+            <Users className="w-8 h-8 text-primary" />
+          </div>
           <Button
             onClick={() => setAddTeacherOpen(true)}
             className="gap-2"
@@ -58,10 +62,6 @@ export default function TeachersPage() {
             <UserPlus className="w-5 h-5" />
             إضافة معلم
           </Button>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-foreground">أداء المعلمين</h1>
-            <Users className="w-8 h-8 text-primary" />
-          </div>
         </div>
 
         {/* Overview Statistics */}

@@ -65,18 +65,59 @@ export interface CreateClassRequest {
 }
 
 // ============= Student Types =============
+export type StudentCategory = 'عادي' | 'اصحاب الهمم' | 'اصحاب المراسيم' | 'أبناء المواطنات';
+
+export type AttendanceCategory =
+  | 'حضور جيد'
+  | '1-2 تأخيرات'
+  | '3 أيام غياب'
+  | 'غياب متكرر يوم الجمعة'
+  | 'أكثر من 5 أيام غياب'
+  | 'أكثر من 15 يوم غياب';
+
+export type AttendanceSeverity = 'good' | 'info' | 'warning' | 'critical';
+
+export interface AttendanceStats {
+  totalDays: number;
+  absentDays: number;
+  lateDays: number;
+  fridayAbsences: number;
+}
+
 export interface Student {
   id: number;
   name: string;
   studentId: string;
   grade: string;
   class: string;
+  section: string;
+  classTeacher: string;
   avatar?: string;
   status: 'active' | 'inactive' | 'transferred';
   attendanceRate: number;
   behaviorScore: number;
+  studentCategory: StudentCategory;
   parentPhone: string;
   createdAt: string;
+  attendanceCategory?: AttendanceCategory;
+  attendanceSeverity?: AttendanceSeverity;
+  attendanceStats?: AttendanceStats;
+}
+
+export interface ParentInfo {
+  fatherName: string;
+  fatherPhone: string;
+  fatherEmail: string;
+  fatherOccupation: string;
+  motherName: string;
+  motherPhone: string;
+  motherEmail: string;
+  motherOccupation: string;
+  primaryContact: 'father' | 'mother' | 'both';
+  address: string;
+  emergencyContact: string;
+  nationalId: string;
+  email: string;
 }
 
 export interface StudentDetails extends Student {
@@ -84,13 +125,7 @@ export interface StudentDetails extends Student {
   nationality: string;
   address: string;
   enrollmentDate: string;
-  parent: {
-    fatherName: string;
-    fatherPhone: string;
-    motherName: string;
-    motherPhone: string;
-    email: string;
-  };
+  parent: ParentInfo;
   medical: {
     bloodType: string;
     allergies: string[];
@@ -358,6 +393,10 @@ export interface BehaviorViolation {
   reportedBy: string;
   status: ViolationStatus;
   action: string | null;
+  marksDeducted?: number;
+  occurrenceCount?: number;
+  behaviorNotes?: string;
+  isChildProtectionCase?: boolean;
 }
 
 export interface BehaviorViolationStats {
@@ -378,6 +417,10 @@ export interface CreateViolationRequest {
   severity: "low" | "medium" | "high";
   description: string;
   date?: string;
+  marksDeducted?: number;
+  occurrenceCount?: number;
+  behaviorNotes?: string;
+  isChildProtectionCase?: boolean;
 }
 
 export interface PositiveBehavior {

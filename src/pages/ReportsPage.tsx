@@ -17,16 +17,16 @@ export default function ReportsPage() {
     <DashboardLayout>
       <div className="mb-8">
         <div className="flex items-center justify-between">
-          <Button className="gap-2">
-            <Download className="w-4 h-4" />
-            تصدير التقرير الشهري
-          </Button>
           <div className="text-right">
             <h1 className="text-2xl font-bold text-foreground">وحدة التقارير الإدارية</h1>
             <p className="text-muted-foreground">
               متابعة الأداء الأسبوعي واعتماد الطلبات الرسمية
             </p>
           </div>
+          <Button className="gap-2">
+            <Download className="w-4 h-4" />
+            تصدير التقرير الشهري
+          </Button>
         </div>
       </div>
 

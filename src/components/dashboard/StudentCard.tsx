@@ -1,5 +1,6 @@
-import { Star } from "lucide-react";
+import { Star, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { AttendanceCategory, AttendanceSeverity } from "@/lib/api/types";
 
 interface Student {
   id: string;
@@ -13,6 +14,8 @@ interface Student {
   avatar: string;
   grade?: string;
   section?: string;
+  attendanceCategory?: AttendanceCategory;
+  attendanceSeverity?: AttendanceSeverity;
 }
 
 interface StudentCardProps {
@@ -27,10 +30,20 @@ export function StudentCard({ student, onClick }: StudentCardProps) {
     "at-risk": { label: "معرض للخطر", bg: "bg-destructive/10", text: "text-destructive" },
   };
 
+  const attendanceSeverityConfig = {
+    "good": { bg: "bg-green-100", text: "text-green-800", border: "border-green-300" },
+    "info": { bg: "bg-blue-100", text: "text-blue-800", border: "border-blue-300" },
+    "warning": { bg: "bg-orange-100", text: "text-orange-800", border: "border-orange-300" },
+    "critical": { bg: "bg-red-100", text: "text-red-800", border: "border-red-300" },
+  };
+
   const status = statusConfig[student.status];
+  const attendanceStyle = student.attendanceSeverity
+    ? attendanceSeverityConfig[student.attendanceSeverity]
+    : null;
 
   return (
-    <div 
+    <div
       dir="rtl"
       className="bg-card rounded-xl p-4 shadow-sm border border-border hover:shadow-md transition-shadow cursor-pointer"
       onClick={onClick}
@@ -43,11 +56,24 @@ export function StudentCard({ student, onClick }: StudentCardProps) {
           {status.label}
         </div>
       </div>
-      
+
       <div className="text-right">
         <h4 className="font-bold text-foreground mb-1">{student.name}</h4>
         <p className="text-xs text-muted-foreground mb-1">{student.nameEn}</p>
-        <p className="text-xs text-accent mb-3">{student.studentId}</p>
+        <p className="text-xs text-accent mb-2">{student.studentId}</p>
+
+        {/* Attendance Category Badge */}
+        {student.attendanceCategory && student.attendanceCategory !== 'حضور جيد' && attendanceStyle && (
+          <div className={cn(
+            "inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium border",
+            attendanceStyle.bg,
+            attendanceStyle.text,
+            attendanceStyle.border
+          )}>
+            <Calendar className="w-3 h-3" />
+            <span>{student.attendanceCategory}</span>
+          </div>
+        )}
       </div>
 
       <div className="flex items-center justify-between pt-3 border-t border-border">
@@ -64,7 +90,7 @@ export function StudentCard({ student, onClick }: StudentCardProps) {
           ))}
         </div>
       </div>
-      
+
       <p className={cn("text-xs mt-2 text-right", status.text)}>
         {student.points}
       </p>

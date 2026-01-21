@@ -12,6 +12,7 @@ import { RecentLessonsCard } from "@/components/dashboard/RecentLessonsCard";
 import { Users, AlertTriangle, TrendingUp, BookOpen } from "lucide-react";
 import { dashboardApi } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useMemo } from "react";
 
 const notifications = [
   { id: "1", text: "مطلوب اعتماد خطة الأنشطة اللاصفية من المديرة", isNew: true },
@@ -67,15 +68,20 @@ export default function Index() {
 
   const stats = statsData?.data;
   
-  const attendanceChartData = attendanceData?.data?.map(item => ({
-    grade: item.grade,
-    value: item.attendance,
-  })) || [];
+  const attendanceChartData = useMemo(() => {
+    return attendanceData?.data?.map(item => ({
+      grade: item.grade,
+      value: item.attendance,
+    })) || [];
+  }, [attendanceData]);
 
-  const performanceChartData = performanceData?.data?.map(item => ({
+const performanceChartData = useMemo(() => {
+  return performanceData?.data?.map(item => ({
     subject: item.subject,
     value: item.average,
   })) || [];
+}, [performanceData]);
+
 // console.log("attendanceChartData",attendanceChartData);
   const years = Array.from({ length: 11 }, (_, i) => 2023 + i);
 

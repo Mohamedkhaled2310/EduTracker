@@ -13,6 +13,7 @@ interface GetViolationsParams {
   limit?: number;
   severity?: "low" | "medium" | "high";
   status?: "pending" | "resolved";
+  isChildProtectionCase?: boolean;
 }
 
 export const behaviorApi = {
@@ -26,6 +27,9 @@ export const behaviorApi = {
     if (params.limit) searchParams.append("limit", params.limit.toString());
     if (params.severity) searchParams.append("severity", params.severity);
     if (params.status) searchParams.append("status", params.status);
+    if (params.isChildProtectionCase !== undefined) {
+      searchParams.append("isChildProtectionCase", params.isChildProtectionCase.toString());
+    }
 
     const query = searchParams.toString();
 

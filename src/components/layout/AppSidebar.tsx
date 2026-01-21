@@ -25,7 +25,7 @@ const menuItems = [
   { icon: Users, label: "أداء المعلمين", path: "/teachers" },
   { icon: GraduationCap, label: "شؤون الطلبة", path: "/students" },
   { icon: Calendar, label: "الحضور والغياب", path: "/attendance" },
-  { icon: BookOpen, label: "المواد الدراسية", path: "/subjects" },
+  { icon: BookOpen, label: "عالم المعرفة الذكي", path: "/subjects" },
   { icon: Award, label: "سجل الدرجات", path: "/grades" },
   { icon: Heart, label: "لوحة التوجيه والإرشاد", path: "/guidance" },
   { icon: Settings, label: "العمليات", path: "/operations" },

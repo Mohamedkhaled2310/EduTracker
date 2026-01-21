@@ -139,6 +139,10 @@ export default function SubjectsPage() {
     <DashboardLayout>
       <div className="mb-8">
         <div className="flex items-center justify-between">
+          <div className="text-right">
+            <h1 className="text-2xl font-bold text-foreground">عالم المعرفة الذكي</h1>
+            <p className="text-muted-foreground">إضافة وتعديل المواد الدراسية</p>
+          </div>
           <Dialog open={isDialogOpen} onOpenChange={(open) => {
             setIsDialogOpen(open);
             if (!open) resetForm();
@@ -225,10 +229,7 @@ export default function SubjectsPage() {
               </form>
             </DialogContent>
           </Dialog>
-          <div className="text-right">
-            <h1 className="text-2xl font-bold text-foreground">عالم المعرفة الذكي</h1>
-            <p className="text-muted-foreground">إضافة وتعديل المواد الدراسية</p>
-          </div>
+
         </div>
       </div>
 

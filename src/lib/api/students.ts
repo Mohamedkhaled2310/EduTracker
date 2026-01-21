@@ -7,6 +7,8 @@ interface GetStudentsParams {
   status?: string;
   search?: string;
   grade?: string;
+  category?: string;
+  attendanceCategory?: string;
 }
 
 export const studentsApi = {
@@ -17,7 +19,9 @@ export const studentsApi = {
     if (params.status) searchParams.append('status', params.status);
     if (params.search) searchParams.append('search', params.search);
     if (params.grade) searchParams.append('grade', params.grade);
-    
+    if (params.category) searchParams.append('category', params.category);
+    if (params.attendanceCategory) searchParams.append('attendanceCategory', params.attendanceCategory);
+
     const queryString = searchParams.toString();
     return apiFetch<PaginatedResponse<Student>>(`/students/all-student${queryString ? `?${queryString}` : ''}`);
   },

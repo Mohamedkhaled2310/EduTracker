@@ -5,9 +5,9 @@ export default function OperationsPage() {
   return (
     <DashboardLayout>
       <div className="mb-8">
-        <div className="flex items-center justify-end gap-3 mb-2">
-          <h1 className="text-2xl font-bold text-foreground">العمليات</h1>
+        <div className="flex items-center justify-start gap-3 mb-2">
           <Settings className="w-8 h-8 text-primary" />
+          <h1 className="text-2xl font-bold text-foreground">العمليات</h1>
         </div>
         <p className="text-muted-foreground text-right">إدارة العمليات والإعدادات</p>
       </div>
