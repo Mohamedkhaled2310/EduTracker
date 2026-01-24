@@ -4,6 +4,8 @@ import type { ApiResponse, StudentGrades, RecordGradeRequest } from './types';
 interface GetGradesParams {
   semester?: number;
   year?: string;
+  gradeLevel?: string;
+  performanceRange?: string;
 }
 
 export const gradesApi = {
@@ -11,7 +13,9 @@ export const gradesApi = {
     const searchParams = new URLSearchParams();
     if (params.semester) searchParams.append('semester', params.semester.toString());
     if (params.year) searchParams.append('year', params.year);
-    
+    if (params.gradeLevel) searchParams.append('gradeLevel', params.gradeLevel);
+    if (params.performanceRange) searchParams.append('performanceRange', params.performanceRange);
+
     const queryString = searchParams.toString();
     return apiFetch<ApiResponse<StudentGrades>>(`/grades/student/${studentId}${queryString ? `?${queryString}` : ''}`);
   },

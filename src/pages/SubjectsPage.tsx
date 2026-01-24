@@ -17,22 +17,27 @@ export default function SubjectsPage() {
   const [editingSubject, setEditingSubject] = useState<Subject | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterGrade, setFilterGrade] = useState("");
-  
+  const [filterType, setFilterType] = useState("");
+
   const [formData, setFormData] = useState<CreateSubjectRequest>({
     name: "",
     code: "",
     gradeLevel: "",
+    subjectType: "basic",
     passingGrade: 50,
     status: "active",
   });
-  
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Fetch subjects
   const { data: subjectsData, isLoading } = useQuery({
-    queryKey: ['subjects', filterGrade],
-    queryFn: () => subjectsApi.getAll({ gradeLevel: filterGrade || undefined }),
+    queryKey: ['subjects', filterGrade, filterType],
+    queryFn: () => subjectsApi.getAll({
+      gradeLevel: filterGrade || undefined,
+      subjectType: filterType || undefined
+    }),
   });
 
   // Create subject mutation
@@ -55,7 +60,7 @@ export default function SubjectsPage() {
 
   // Update subject mutation
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<CreateSubjectRequest> }) => 
+    mutationFn: ({ id, data }: { id: number; data: Partial<CreateSubjectRequest> }) =>
       subjectsApi.update(id, data),
     onSuccess: () => {
       toast({ title: "تم تحديث المادة بنجاح" });
@@ -93,6 +98,7 @@ export default function SubjectsPage() {
       name: "",
       code: "",
       gradeLevel: "",
+      subjectType: "basic",
       passingGrade: 50,
       status: "active",
     });
@@ -105,6 +111,7 @@ export default function SubjectsPage() {
       name: subject.name,
       code: subject.code,
       gradeLevel: subject.gradeLevel,
+      subjectType: subject.subjectType || "basic",
       passingGrade: subject.passingGrade,
       status: subject.status,
     });
@@ -113,7 +120,7 @@ export default function SubjectsPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.code || !formData.gradeLevel) {
       toast({
         title: "خطأ",
@@ -130,7 +137,7 @@ export default function SubjectsPage() {
     }
   };
 
-  const subjects = subjectsData?.data?.filter(s => 
+  const subjects = subjectsData?.data?.filter(s =>
     s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.code.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
@@ -205,6 +212,21 @@ export default function SubjectsPage() {
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label>نوع المادة *</Label>
+                  <Select
+                    value={formData.subjectType}
+                    onValueChange={(value: 'basic' | 'activity') => setFormData(prev => ({ ...prev, subjectType: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر نوع المادة" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="basic">أساسية</SelectItem>
+                      <SelectItem value="activity">نشاط</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
                   <Label>الحالة</Label>
                   <Select
                     value={formData.status}
@@ -219,8 +241,8 @@ export default function SubjectsPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="w-full"
                   disabled={createMutation.isPending || updateMutation.isPending}
                 >
@@ -235,7 +257,7 @@ export default function SubjectsPage() {
 
       {/* Filters */}
       <div className="bg-card rounded-xl p-6 shadow-sm border border-border mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Select value={filterGrade} onValueChange={setFilterGrade}>
             <SelectTrigger>
               <SelectValue placeholder="تصفية حسب المرحلة" />
@@ -246,6 +268,16 @@ export default function SubjectsPage() {
               <SelectItem value="Second Grade">الصف الثاني</SelectItem>
               <SelectItem value="Third Grade">الصف الثالث</SelectItem>
               <SelectItem value="Fourth Grade">الصف الرابع</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={filterType} onValueChange={setFilterType}>
+            <SelectTrigger>
+              <SelectValue placeholder="تصفية حسب النوع" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">جميع الأنواع</SelectItem>
+              <SelectItem value="basic">أساسية</SelectItem>
+              <SelectItem value="activity">نشاط</SelectItem>
             </SelectContent>
           </Select>
           <div className="relative">
@@ -277,8 +309,8 @@ export default function SubjectsPage() {
         ) : subjects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {subjects.map((subject) => (
-              <div 
-                key={subject.id} 
+              <div
+                key={subject.id}
                 className="bg-secondary/30 border border-border rounded-xl p-4 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-start justify-between mb-3">
@@ -301,14 +333,21 @@ export default function SubjectsPage() {
                     <p className="text-sm text-muted-foreground">{subject.code}</p>
                   </div>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    subject.status === 'active' 
-                      ? 'bg-success/10 text-success' 
+                <div className="flex items-center justify-between text-sm gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className={`px-2 py-1 rounded-full text-xs ${subject.status === 'active'
+                      ? 'bg-success/10 text-success'
                       : 'bg-muted text-muted-foreground'
-                  }`}>
-                    {subject.status === 'active' ? 'نشط' : 'غير نشط'}
-                  </span>
+                      }`}>
+                      {subject.status === 'active' ? 'نشط' : 'غير نشط'}
+                    </span>
+                    <span className={`px-2 py-1 rounded-full text-xs ${subject.subjectType === 'activity'
+                        ? 'bg-green-500/10 text-green-600 dark:text-green-400'
+                        : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                      }`}>
+                      {subject.subjectType === 'activity' ? 'نشاط' : 'أساسية'}
+                    </span>
+                  </div>
                   <div className="text-right">
                     <p className="text-muted-foreground">{subject.gradeLevel}</p>
                     <p className="text-accent">درجة النجاح: {subject.passingGrade}</p>

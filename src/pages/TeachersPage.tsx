@@ -5,7 +5,8 @@ import { TeacherCard } from "@/components/dashboard/TeacherCard";
 import { TeacherOverviewStats } from "@/components/teachers/TeacherOverviewStats";
 import { AddTeacherModal } from "@/components/teachers/AddTeacherModal";
 import { TeacherSupportRecordModal } from "@/components/teachers/TeacherSupportRecordModal";
-import { Users, UserPlus } from "lucide-react";
+import { ClassManagementModal } from "@/components/teachers/ClassManagementModal";
+import { Users, UserPlus, School } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { teachersApi } from "@/lib/api";
@@ -14,6 +15,7 @@ import type { TeacherSupportRecord } from "@/lib/api/types";
 export default function TeachersPage() {
   const [addTeacherOpen, setAddTeacherOpen] = useState(false);
   const [supportRecordOpen, setSupportRecordOpen] = useState(false);
+  const [classManagementOpen, setClassManagementOpen] = useState(false);
   const [selectedTeacherId, setSelectedTeacherId] = useState<number | null>(null);
   const [selectedTeacherName, setSelectedTeacherName] = useState("");
 
@@ -55,13 +57,23 @@ export default function TeachersPage() {
             <h1 className="text-2xl font-bold text-foreground">أداء المعلمين</h1>
             <Users className="w-8 h-8 text-primary" />
           </div>
-          <Button
-            onClick={() => setAddTeacherOpen(true)}
-            className="gap-2"
-          >
-            <UserPlus className="w-5 h-5" />
-            إضافة معلم
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => setClassManagementOpen(true)}
+              variant="outline"
+              className="gap-2"
+            >
+              <School className="w-5 h-5" />
+              إدارة رواد الفصول
+            </Button>
+            <Button
+              onClick={() => setAddTeacherOpen(true)}
+              className="gap-2"
+            >
+              <UserPlus className="w-5 h-5" />
+              إضافة معلم
+            </Button>
+          </div>
         </div>
 
         {/* Overview Statistics */}
@@ -103,6 +115,12 @@ export default function TeachersPage() {
         onOpenChange={handleCloseSupportRecords}
         supportRecords={(supportRecordsData?.data as TeacherSupportRecord[]) || []}
         isLoading={loadingSupportRecords}
+      />
+
+      {/* Class Management Modal */}
+      <ClassManagementModal
+        open={classManagementOpen}
+        onOpenChange={setClassManagementOpen}
       />
     </DashboardLayout>
   );

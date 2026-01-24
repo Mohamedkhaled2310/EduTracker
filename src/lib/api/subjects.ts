@@ -4,6 +4,7 @@ import type { ApiResponse, Subject, SubjectDetails, CreateSubjectRequest } from 
 interface GetSubjectsParams {
   gradeLevel?: string;
   status?: string;
+  subjectType?: string;
 }
 
 export const subjectsApi = {
@@ -11,7 +12,8 @@ export const subjectsApi = {
     const searchParams = new URLSearchParams();
     if (params.gradeLevel) searchParams.append('gradeLevel', params.gradeLevel);
     if (params.status) searchParams.append('status', params.status);
-    
+    if (params.subjectType) searchParams.append('subjectType', params.subjectType);
+
     const queryString = searchParams.toString();
     return apiFetch<ApiResponse<Subject[]>>(`/subjects${queryString ? `?${queryString}` : ''}`);
   },

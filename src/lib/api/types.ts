@@ -282,6 +282,7 @@ export interface Subject {
   name: string;
   code: string;
   gradeLevel: string;
+  subjectType?: 'basic' | 'activity';
   passingGrade: number;
   status: 'active' | 'inactive';
   createdAt: string;
@@ -303,6 +304,7 @@ export interface CreateSubjectRequest {
   name: string;
   code: string;
   gradeLevel: string;
+  subjectType?: 'basic' | 'activity';
   passingGrade: number;
   status?: 'active' | 'inactive';
 }
@@ -323,6 +325,10 @@ export interface StudentGrades {
     participation: number;
     midterm: number;
     final: number;
+    diagnosticTest: number;
+    formativeTest: number;
+    finalTest: number;
+    semesterGrade: number;
     total: number;
     percentage: number;
     grade: string;
@@ -340,7 +346,7 @@ export interface RecordGradeRequest {
   subjectId: string;
   semester: number;
   year: string;
-  type: 'homework' | 'participation' | 'midterm' | 'final';
+  type: 'homework' | 'participation' | 'midterm' | 'final' | 'diagnostic' | 'formative' | 'finalTest' | 'semesterGrade';
   score: number;
   maxScore: number;
 }
@@ -441,5 +447,29 @@ export interface CreatePositiveBehaviorRequest {
   description: string;
   currentScore?: number;
   date?: string;
+}
+
+// ============= Class Types =============
+export interface Class {
+  id: string;
+  name: string;
+  grade: string;
+  section: string;
+  academicYear: string;
+  capacity: number;
+  room?: string;
+  classTeacherId?: string;
+  classTeacher?: {
+    id: string;
+    name: string;
+    employeeId: string;
+    email: string;
+  };
+  studentCount?: number;
+  status: 'active' | 'inactive' | 'archived';
+}
+
+export interface UpdateClassTeacherRequest {
+  classTeacherId: string;
 }
 

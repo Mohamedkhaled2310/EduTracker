@@ -16,7 +16,9 @@ export default function GradesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  
+  const [gradeLevel, setGradeLevel] = useState<string>("");
+  const [performanceRange, setPerformanceRange] = useState<string>("");
+
   const [formData, setFormData] = useState<RecordGradeRequest>({
     studentId: null,
     subjectId: null,
@@ -26,14 +28,14 @@ export default function GradesPage() {
     score: 0,
     maxScore: 100,
   });
-  
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Fetch students
   const { data: studentsData, isLoading: studentsLoading } = useQuery({
-    queryKey: ['students-for-grades', searchQuery],
-    queryFn: () => studentsApi.getAll({ search: searchQuery || undefined, limit: 50 }),
+    queryKey: ['students-for-grades', searchQuery, gradeLevel],
+    queryFn: () => studentsApi.getAll({ search: searchQuery || undefined, grade: gradeLevel && gradeLevel !== 'all' ? gradeLevel : undefined, limit: 50 }),
   });
 
   // Fetch subjects
@@ -44,8 +46,8 @@ export default function GradesPage() {
 
   // Fetch selected student grades
   const { data: gradesData, isLoading: gradesLoading } = useQuery({
-    queryKey: ['student-grades', selectedStudent],
-    queryFn: () => gradesApi.getStudentGrades(selectedStudent!),
+    queryKey: ['student-grades', selectedStudent, performanceRange],
+    queryFn: () => gradesApi.getStudentGrades(selectedStudent!, { performanceRange: performanceRange || undefined }),
     enabled: !!selectedStudent,
   });
 
@@ -67,37 +69,37 @@ export default function GradesPage() {
     },
   });
 
-const resetForm = () => {
-  setFormData({
-    studentId: selectedStudent,
-    subjectId: null,
-    semester: 1,
-    year: "2024-2025",
-    type: "homework",
-    score: 0,
-    maxScore: 100,
-  });
-};
-
-const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
-  console.log("subjectId",formData.subjectId)
-  if (formData.studentId == null || formData.subjectId == null) {
-    toast({
-      title: "خطأ",
-      description: "يرجى اختيار الطالب والمادة",
-      variant: "destructive",
+  const resetForm = () => {
+    setFormData({
+      studentId: selectedStudent,
+      subjectId: null,
+      semester: 1,
+      year: "2024-2025",
+      type: "homework",
+      score: 0,
+      maxScore: 100,
     });
-    return;
-  }
+  };
 
-  // تحويل null => رقم فعلي
-  recordMutation.mutate({
-    ...formData,
-    studentId: formData.studentId!,
-    subjectId: formData.subjectId!,
-  });
-};
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("subjectId", formData.subjectId)
+    if (formData.studentId == null || formData.subjectId == null) {
+      toast({
+        title: "خطأ",
+        description: "يرجى اختيار الطالب والمادة",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // تحويل null => رقم فعلي
+    recordMutation.mutate({
+      ...formData,
+      studentId: formData.studentId!,
+      subjectId: formData.subjectId!,
+    });
+  };
 
 
   const students = studentsData?.data?.students || [];
@@ -113,19 +115,19 @@ const handleSubmit = (e: React.FormEvent) => {
             <p className="text-muted-foreground">تسجيل ومتابعة درجات الطلاب</p>
           </div>
 
-            <Dialog
-              open={isDialogOpen}
-              onOpenChange={(open) => {
-                setIsDialogOpen(open);
-                if (open && selectedStudent) {
-                  setFormData(prev => ({
-                    ...prev,
-                    studentId: selectedStudent
-                  }));
-                }
-                if (!open) resetForm();
-              }}
-            >
+          <Dialog
+            open={isDialogOpen}
+            onOpenChange={(open) => {
+              setIsDialogOpen(open);
+              if (open && selectedStudent) {
+                setFormData(prev => ({
+                  ...prev,
+                  studentId: selectedStudent
+                }));
+              }
+              if (!open) resetForm();
+            }}
+          >
             <DialogTrigger asChild>
               <Button className="gap-2" disabled={!selectedStudent}>
                 <Plus className="w-4 h-4" />
@@ -162,7 +164,7 @@ const handleSubmit = (e: React.FormEvent) => {
                   <Label>نوع التقييم *</Label>
                   <Select
                     value={formData.type}
-                    onValueChange={(value: 'homework' | 'participation' | 'midterm' | 'final') => 
+                    onValueChange={(value: 'homework' | 'participation' | 'midterm' | 'final' | 'diagnostic' | 'formative' | 'finalTest' | 'semesterGrade') =>
                       setFormData(prev => ({ ...prev, type: value }))
                     }
                   >
@@ -174,6 +176,10 @@ const handleSubmit = (e: React.FormEvent) => {
                       <SelectItem value="participation">مشاركة</SelectItem>
                       <SelectItem value="midterm">اختبار نصفي</SelectItem>
                       <SelectItem value="final">اختبار نهائي</SelectItem>
+                      <SelectItem value="diagnostic">اختبار تشخيصي</SelectItem>
+                      <SelectItem value="formative">اختبار تكويني</SelectItem>
+                      <SelectItem value="finalTest">اختبار النهائي</SelectItem>
+                      <SelectItem value="semesterGrade">درجة الفصل</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -249,15 +255,30 @@ const handleSubmit = (e: React.FormEvent) => {
             <h3 className="text-lg font-bold text-foreground">الطلاب</h3>
             <User className="w-5 h-5 text-primary" />
           </div>
-          
-          <div className="relative mb-4">
-            <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="بحث عن طالب..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pr-10"
-            />
+
+          <div className="space-y-3 mb-4">
+            <Select value={gradeLevel} onValueChange={setGradeLevel}>
+              <SelectTrigger>
+                <SelectValue placeholder="تصفية حسب الصف" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">جميع الصفوف</SelectItem>
+                <SelectItem value="الصف الأول">الصف الأول</SelectItem>
+                <SelectItem value="الصف الثاني">الصف الثاني</SelectItem>
+                <SelectItem value="الصف الثالث">الصف الثالث</SelectItem>
+                <SelectItem value="الصف الرابع">الصف الرابع</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="relative">
+              <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="بحث عن طالب..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pr-10"
+              />
+            </div>
           </div>
 
           {studentsLoading ? (
@@ -275,11 +296,10 @@ const handleSubmit = (e: React.FormEvent) => {
                     setSelectedStudent(student.id);
                     setFormData(prev => ({ ...prev, studentId: student.id }));
                   }}
-                  className={`w-full p-3 rounded-lg text-right transition-colors ${
-                    selectedStudent === student.id
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-secondary/30 hover:bg-secondary/50'
-                  }`}
+                  className={`w-full p-3 rounded-lg text-right transition-colors ${selectedStudent === student.id
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-secondary/30 hover:bg-secondary/50'
+                    }`}
                 >
                   <p className="font-medium">{student.name}</p>
                   <p className={`text-xs ${selectedStudent === student.id ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
@@ -293,9 +313,24 @@ const handleSubmit = (e: React.FormEvent) => {
 
         {/* Grades Display */}
         <div className="lg:col-span-2 bg-card rounded-xl p-6 shadow-sm border border-border">
-          <div className="flex items-center justify-end gap-2 mb-6">
-            <h3 className="text-lg font-bold text-foreground">سجل الدرجات</h3>
-            <GraduationCap className="w-5 h-5 text-primary" />
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex gap-3">
+              <Select value={performanceRange} onValueChange={setPerformanceRange}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="تصفية حسب النسبة" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">جميع النسب</SelectItem>
+                  <SelectItem value="below50">أقل من 50</SelectItem>
+                  <SelectItem value="50to69">50-69</SelectItem>
+                  <SelectItem value="70andAbove">70 وما فوق</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg font-bold text-foreground">سجل الدرجات</h3>
+              <GraduationCap className="w-5 h-5 text-primary" />
+            </div>
           </div>
 
           {!selectedStudent ? (
@@ -349,6 +384,10 @@ const handleSubmit = (e: React.FormEvent) => {
                       <th className="text-right py-3 px-4 text-muted-foreground font-medium">التقدير</th>
                       <th className="text-right py-3 px-4 text-muted-foreground font-medium">النسبة</th>
                       <th className="text-right py-3 px-4 text-muted-foreground font-medium">المجموع</th>
+                      <th className="text-right py-3 px-4 text-muted-foreground font-medium">درجة الفصل</th>
+                      <th className="text-right py-3 px-4 text-muted-foreground font-medium">اختبار النهائي</th>
+                      <th className="text-right py-3 px-4 text-muted-foreground font-medium">اختبار تكويني</th>
+                      <th className="text-right py-3 px-4 text-muted-foreground font-medium">اختبار تشخيصي</th>
                       <th className="text-right py-3 px-4 text-muted-foreground font-medium">النهائي</th>
                       <th className="text-right py-3 px-4 text-muted-foreground font-medium">النصفي</th>
                       <th className="text-right py-3 px-4 text-muted-foreground font-medium">المشاركة</th>
@@ -360,16 +399,19 @@ const handleSubmit = (e: React.FormEvent) => {
                     {studentGrades.subjects.map((subject, index) => (
                       <tr key={index} className="border-b border-border last:border-0">
                         <td className="py-4 px-4">
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            subject.percentage >= 80 ? 'bg-success/10 text-success' :
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${subject.percentage >= 80 ? 'bg-success/10 text-success' :
                             subject.percentage >= 60 ? 'bg-warning/10 text-warning' :
-                            'bg-destructive/10 text-destructive'
-                          }`}>
+                              'bg-destructive/10 text-destructive'
+                            }`}>
                             {subject.grade}
                           </span>
                         </td>
                         <td className="py-4 px-4 text-foreground font-medium">{subject.percentage}%</td>
                         <td className="py-4 px-4 text-foreground">{subject.total}</td>
+                        <td className="py-4 px-4 text-muted-foreground">{subject.semesterGrade || '-'}</td>
+                        <td className="py-4 px-4 text-muted-foreground">{subject.finalTest || '-'}</td>
+                        <td className="py-4 px-4 text-muted-foreground">{subject.formativeTest || '-'}</td>
+                        <td className="py-4 px-4 text-muted-foreground">{subject.diagnosticTest || '-'}</td>
                         <td className="py-4 px-4 text-muted-foreground">{subject.final}</td>
                         <td className="py-4 px-4 text-muted-foreground">{subject.midterm}</td>
                         <td className="py-4 px-4 text-muted-foreground">{subject.participation}</td>

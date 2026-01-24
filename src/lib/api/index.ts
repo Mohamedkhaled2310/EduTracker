@@ -9,3 +9,4 @@ export { attendanceApi } from './attendance';
 export { subjectsApi } from './subjects';
 export { gradesApi } from './grades';
 export { communicationsApi } from './communications';
+export { classesApi } from './classes';
