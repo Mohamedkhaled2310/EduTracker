@@ -16,7 +16,7 @@ export default function TeachersPage() {
   const [addTeacherOpen, setAddTeacherOpen] = useState(false);
   const [supportRecordOpen, setSupportRecordOpen] = useState(false);
   const [classManagementOpen, setClassManagementOpen] = useState(false);
-  const [selectedTeacherId, setSelectedTeacherId] = useState<number | null>(null);
+  const [selectedTeacherId, setSelectedTeacherId] = useState<string | null>(null);
   const [selectedTeacherName, setSelectedTeacherName] = useState("");
 
   const { data: teachersData, isLoading } = useQuery({
@@ -38,15 +38,20 @@ export default function TeachersPage() {
   })) || [];
 
   const handleOpenSupportRecords = (teacherId: string, teacherName: string) => {
-    setSelectedTeacherId(Number(teacherId));
+    setSelectedTeacherId(teacherId); // Keep as string (UUID)
     setSelectedTeacherName(teacherName);
     setSupportRecordOpen(true);
   };
 
-  const handleCloseSupportRecords = () => {
-    setSupportRecordOpen(false);
-    setSelectedTeacherId(null);
-    setSelectedTeacherName("");
+  const handleCloseSupportRecords = (open: boolean) => {
+    if (!open) {
+      setSupportRecordOpen(false);
+      // Don't clear teacherId immediately - let the modal close first
+      setTimeout(() => {
+        setSelectedTeacherId(null);
+        setSelectedTeacherName("");
+      }, 300); // Wait for modal close animation
+    }
   };
 
   return (

@@ -85,7 +85,7 @@ export interface AttendanceStats {
 }
 
 export interface Student {
-  id: number;
+  id: string;
   name: string;
   studentId: string;
   grade: string;
@@ -97,6 +97,7 @@ export interface Student {
   attendanceRate: number;
   behaviorScore: number;
   studentCategory: StudentCategory;
+  studentLevel?: 'high' | 'medium' | 'special_needs';
   parentPhone: string;
   createdAt: string;
   attendanceCategory?: AttendanceCategory;
@@ -164,7 +165,7 @@ export interface PaginatedResponse<T> {
 
 // ============= Teacher Types =============
 export interface Teacher {
-  id: number;
+  id: string; // UUID from backend
   name: string;
   employeeId: string;
   department: string;
@@ -278,7 +279,7 @@ export interface AttendanceHistory {
 
 // ============= Subject Types =============
 export interface Subject {
-  id: number;
+  id: string;
   name: string;
   code: string;
   gradeLevel: string;
@@ -336,13 +337,12 @@ export interface StudentGrades {
   summary: {
     totalPercentage: number;
     rank: number;
-    totalStudents: number;
-    gpa: string;
+    academicStatus: 'excellent' | 'needs-support' | 'at-risk';
   };
 }
 
 export interface RecordGradeRequest {
-  studentId: number;
+  studentId: string;
   subjectId: string;
   semester: number;
   year: string;
@@ -385,7 +385,7 @@ export interface ApiError {
 
 // Behavior Types
 
-export type ViolationSeverity = "low" | "medium" | "high";
+export type ViolationSeverity = "first_degree" | "second_degree" | "third_degree" | "fourth_degree";
 export type ViolationStatus = "pending" | "resolved";
 
 export interface BehaviorViolation {
@@ -418,9 +418,8 @@ export interface GetViolationsResponse {
 
 export interface CreateViolationRequest {
   studentIdCode: string;
-  employeeId: string;
   type: string;
-  severity: "low" | "medium" | "high";
+  severity: "first_degree" | "second_degree" | "third_degree" | "fourth_degree";
   description: string;
   date?: string;
   marksDeducted?: number;
@@ -442,7 +441,6 @@ export interface PositiveBehavior {
 
 export interface CreatePositiveBehaviorRequest {
   studentIdCode: string;
-  employeeId: string;
   type: string;
   description: string;
   currentScore?: number;
@@ -473,3 +471,151 @@ export interface UpdateClassTeacherRequest {
   classTeacherId: string;
 }
 
+// ============= Lesson Types =============
+export type QuestionType = 'multiple_choice' | 'true_false';
+export type QuestionLevel = 'high' | 'medium' | 'special_needs';
+
+export interface LessonObjective {
+  ar: string;
+  en?: string;
+}
+
+export interface Lesson {
+  id: string;
+  subjectId: string;
+  title: string;
+  titleEn?: string;
+  description?: string;
+  descriptionEn?: string;
+  videoUrl: string;
+  videoDuration: number;
+  orderIndex: number;
+  objectives?: LessonObjective[];
+  status: 'draft' | 'published' | 'archived';
+  thumbnailUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  subject?: {
+    id: string;
+    name: string;
+    code: string;
+  };
+  questions?: Question[];
+}
+
+export interface QuestionOption {
+  ar: string;
+  en?: string;
+  value: string | number;
+}
+
+export interface QuestionHint {
+  ar: string;
+  en?: string;
+}
+
+export interface Question {
+  id: string;
+  lessonId: string;
+  questionText: string;
+  questionTextEn?: string;
+  questionType: QuestionType;
+  level: QuestionLevel;
+  options?: QuestionOption[];
+  correctAnswer: any;
+  explanation?: string;
+  explanationEn?: string;
+  points: number;
+  orderIndex: number;
+  hints?: QuestionHint[];
+}
+
+export interface StudentProgress {
+  id: string;
+  studentId: string;
+  lessonId: string;
+  videoWatched: boolean;
+  videoProgress: number;
+  questionsAttempted: number;
+  questionsCorrect: number;
+  selectedLevel?: QuestionLevel;
+  completedAt?: string;
+  score: number;
+  timeSpent: number;
+  createdAt?: string;
+  updatedAt?: string;
+  lesson?: Lesson;
+}
+
+export interface StudentAnswer {
+  id: string;
+  studentId: string;
+  questionId: string;
+  studentAnswer: any;
+  isCorrect: boolean;
+  attemptNumber: number;
+  timeSpent: number;
+  hintsUsed: number;
+  createdAt?: string;
+  question?: Question;
+}
+
+export interface CreateLessonRequest {
+  subjectId: string;
+  title: string;
+  titleEn?: string;
+  description?: string;
+  descriptionEn?: string;
+  videoUrl: string;
+  videoDuration: number;
+  orderIndex?: number;
+  objectives?: LessonObjective[];
+  status?: 'draft' | 'published' | 'archived';
+  thumbnailUrl?: string;
+}
+
+export interface CreateQuestionRequest {
+  questionText: string;
+  questionTextEn?: string;
+  questionType: QuestionType;
+  level: QuestionLevel;
+  options?: QuestionOption[];
+  correctAnswer: any;
+  explanation?: string;
+  explanationEn?: string;
+  points?: number;
+  orderIndex?: number;
+  hints?: QuestionHint[];
+}
+
+export interface SubmitAnswerRequest {
+  questionId: string;
+  studentAnswer: any;
+  timeSpent?: number;
+  hintsUsed?: number;
+}
+
+export interface SubmitAnswerResponse {
+  success: boolean;
+  message: string;
+  data: {
+    isCorrect: boolean;
+    correctAnswer: any;
+    explanation?: string;
+    explanationEn?: string;
+    points: number;
+  };
+}
+
+export interface StudentStats {
+  completedLessons: number;
+  totalLessons: number;
+  averageScore: number;
+  totalTimeSpent: number;
+  completionRate: number;
+}
+
+export interface LessonProgressResponse {
+  progress: StudentProgress | null;
+  answeredQuestions: StudentAnswer[];
+}

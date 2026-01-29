@@ -40,9 +40,8 @@ export function BehaviorViolationModal({
 
     const [formData, setFormData] = useState({
         studentIdCode: initialStudentId || "",
-        employeeId: "",
         type: "",
-        severity: "low" as "low" | "medium" | "high",
+        severity: "first_degree" as "first_degree" | "second_degree" | "third_degree" | "fourth_degree",
         description: "",
         marksDeducted: 1,
         occurrenceCount: 1,
@@ -75,9 +74,8 @@ export function BehaviorViolationModal({
     const resetForm = () => {
         setFormData({
             studentIdCode: initialStudentId || "",
-            employeeId: "",
             type: "",
-            severity: "low",
+            severity: "first_degree",
             description: "",
             marksDeducted: 1,
             occurrenceCount: 1,
@@ -104,7 +102,7 @@ export function BehaviorViolationModal({
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Student Information */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="studentIdCode">رقم الطالب *</Label>
                             <Input
@@ -118,17 +116,6 @@ export function BehaviorViolationModal({
                             {initialStudentName && (
                                 <p className="text-sm text-muted-foreground">{initialStudentName}</p>
                             )}
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="employeeId">رقم الموظف (المبلغ) *</Label>
-                            <Input
-                                id="employeeId"
-                                value={formData.employeeId}
-                                onChange={(e) => setFormData({ ...formData, employeeId: e.target.value })}
-                                placeholder="أدخل رقم الموظف"
-                                required
-                            />
                         </div>
                     </div>
 
@@ -165,9 +152,10 @@ export function BehaviorViolationModal({
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="low">منخفضة</SelectItem>
-                                    <SelectItem value="medium">متوسطة</SelectItem>
-                                    <SelectItem value="high">عالية</SelectItem>
+                                    <SelectItem value="first_degree">درجة اولى</SelectItem>
+                                    <SelectItem value="second_degree">درجة ثانية</SelectItem>
+                                    <SelectItem value="third_degree">درجة ثالثة</SelectItem>
+                                    <SelectItem value="fourth_degree">درجة رابعة</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>

@@ -24,7 +24,7 @@ export const teachersApi = {
     return apiFetch<ApiResponse<Teacher[]>>(`/teachers${queryString ? `?${queryString}` : ''}`);
   },
 
-  getById: async (id: number): Promise<ApiResponse<TeacherDetails>> => {
+  getById: async (id: string): Promise<ApiResponse<TeacherDetails>> => {
     return apiFetch<ApiResponse<TeacherDetails>>(`/teachers/${id}`);
   },
 
@@ -35,21 +35,21 @@ export const teachersApi = {
     });
   },
 
-  update: async (id: number, data: Partial<CreateTeacherRequest>): Promise<ApiResponse<null>> => {
+  update: async (id: string, data: Partial<CreateTeacherRequest>): Promise<ApiResponse<null>> => {
     return apiFetch(`/teachers/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
     });
   },
 
-  createSupportRecord: async (teacherId: number, data: CreateSupportRecordRequest): Promise<ApiResponse<TeacherSupportRecord>> => {
+  createSupportRecord: async (teacherId: string, data: CreateSupportRecordRequest): Promise<ApiResponse<TeacherSupportRecord>> => {
     return apiFetch(`/teachers/${teacherId}/support-records`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
   },
 
-  getSupportRecords: async (teacherId: number): Promise<ApiResponse<TeacherSupportRecord[]>> => {
+  getSupportRecords: async (teacherId: string): Promise<ApiResponse<TeacherSupportRecord[]>> => {
     return apiFetch(`/teachers/${teacherId}/support-records`);
   },
 

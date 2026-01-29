@@ -10,3 +10,5 @@ export { subjectsApi } from './subjects';
 export { gradesApi } from './grades';
 export { communicationsApi } from './communications';
 export { classesApi } from './classes';
+export { lessonsApi } from './lessons';
+export { progressApi } from './progress';

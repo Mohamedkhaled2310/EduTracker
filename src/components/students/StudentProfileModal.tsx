@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { attendanceApi } from "@/lib/api/attendance";
 import { behaviorApi } from "@/lib/api/behavior";
 import { gradesApi } from "@/lib/api/grades";
+import { BehaviorRecordModal } from "./BehaviorRecordModal";
 import type { AttendanceHistory, StudentGrades, BehaviorViolation, PositiveBehavior } from "@/lib/api/types";
 
 interface Student {
@@ -54,6 +55,7 @@ interface StudentProfileModalProps {
 
 export function StudentProfileModal({ student, open, onOpenChange }: StudentProfileModalProps) {
   const [activeTab, setActiveTab] = useState("profile");
+  const [showBehaviorModal, setShowBehaviorModal] = useState(false);
 
   // API data state
   const [attendanceData, setAttendanceData] = useState<AttendanceHistory | null>(null);
@@ -160,9 +162,10 @@ export function StudentProfileModal({ student, open, onOpenChange }: StudentProf
   // Helper function to map severity to points
   const severityToPoints = (severity: string): number => {
     const pointsMap: Record<string, number> = {
-      "low": -1,
-      "medium": -2,
-      "high": -3
+      "first_degree": -1,
+      "second_degree": -2,
+      "third_degree": -3,
+      "fourth_degree": -4
     };
     return pointsMap[severity] || -1;
   };
@@ -441,14 +444,25 @@ export function StudentProfileModal({ student, open, onOpenChange }: StudentProf
                   </div>
                   {gradesData.summary && (
                     <div className="bg-primary/10 rounded-xl p-4 border border-primary/20">
-                      <div className="grid grid-cols-2 gap-4 text-center">
+                      <div className="grid grid-cols-3 gap-4 text-center">
                         <div>
-                          <p className="text-sm text-muted-foreground">المعدل التراكمي</p>
-                          <p className="text-2xl font-bold text-primary">{gradesData.summary.gpa}</p>
+                          <p className="text-sm text-muted-foreground">المعدل العام</p>
+                          <p className="text-2xl font-bold text-primary">{gradesData.summary.totalPercentage}%</p>
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">الترتيب</p>
-                          <p className="text-2xl font-bold text-primary">{gradesData.summary.rank}/{gradesData.summary.totalStudents}</p>
+                          <p className="text-2xl font-bold text-primary">{gradesData.summary.rank}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">الحالة الأكاديمية</p>
+                          <p className={`text-lg font-bold ${gradesData.summary.academicStatus === 'excellent' ? 'text-green-600' :
+                            gradesData.summary.academicStatus === 'needs-support' ? 'text-yellow-600' :
+                              'text-red-600'
+                            }`}>
+                            {gradesData.summary.academicStatus === 'excellent' ? 'ممتاز' :
+                              gradesData.summary.academicStatus === 'needs-support' ? 'يحتاج دعم' :
+                                'في خطر'}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -465,7 +479,7 @@ export function StudentProfileModal({ student, open, onOpenChange }: StudentProf
             {/* Behavior Tab */}
             <TabsContent value="behavior" className="mt-0">
               <div className="flex items-center justify-between mb-4">
-                <Button size="sm" className="gap-2">
+                <Button size="sm" className="gap-2" onClick={() => setShowBehaviorModal(true)}>
                   <Plus className="w-4 h-4" />
                   إضافة سجل جديد
                 </Button>
@@ -583,6 +597,16 @@ export function StudentProfileModal({ student, open, onOpenChange }: StudentProf
           <Button>حفظ التغييرات</Button>
         </div>
       </DialogContent>
+
+      {/* Behavior Record Modal */}
+      {student && (
+        <BehaviorRecordModal
+          open={showBehaviorModal}
+          onOpenChange={setShowBehaviorModal}
+          studentIdCode={student.studentId}
+          studentName={student.name}
+        />
+      )}
     </Dialog>
   );
 }

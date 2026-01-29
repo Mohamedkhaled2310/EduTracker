@@ -34,7 +34,7 @@ export const gradesApi = {
     });
   },
 
-  delete: async (data: { studentId: number; subjectId: number; semester: number; year: string }): Promise<ApiResponse<null>> => {
+  delete: async (data: { studentId: string; subjectId: string; semester: number; year: string }): Promise<ApiResponse<null>> => {
     return apiFetch('/grades', {
       method: 'DELETE',
       body: JSON.stringify(data),

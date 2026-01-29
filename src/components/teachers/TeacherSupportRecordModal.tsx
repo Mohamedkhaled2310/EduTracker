@@ -11,7 +11,7 @@ import type { CreateSupportRecordRequest, TeacherSupportRecord } from "@/lib/api
 import { useToast } from "@/hooks/use-toast";
 
 interface TeacherSupportRecordModalProps {
-    teacherId: number | null;
+    teacherId: string | null;
     teacherName: string;
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -54,10 +54,17 @@ export function TeacherSupportRecordModal({
                 notes: ""
             });
         },
-        onError: () => {
+        onError: (error: any) => {
+            // console.error('Support record creation error:', error);
+            console.error('Error details:', {
+                message: error?.message,
+                response: error?.response,
+                teacherId,
+                formData
+            });
             toast({
                 title: "خطأ",
-                description: "فشل في إضافة سجل الدعم",
+                description: error?.message || "فشل في إضافة سجل الدعم",
                 variant: "destructive",
             });
         }
@@ -65,6 +72,19 @@ export function TeacherSupportRecordModal({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        e.stopPropagation(); // Prevent event bubbling that might close the modal
+
+        // console.log('Submitting with teacherId:', teacherId);
+        if (!teacherId) {
+            // console.error('teacherId is null!');
+            toast({
+                title: "خطأ",
+                description: "معرف المعلم مفقود",
+                variant: "destructive",
+            });
+            return;
+        }
+
         createMutation.mutate(formData);
     };
 

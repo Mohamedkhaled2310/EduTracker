@@ -1,11 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  Users, 
-  GraduationCap, 
-  Heart, 
-  Settings, 
-  FileText, 
+import {
+  LayoutDashboard,
+  Users,
+  GraduationCap,
+  Heart,
+  Settings,
+  FileText,
   Bot,
   ChevronLeft,
   ChevronRight,
@@ -27,6 +27,7 @@ const menuItems = [
   { icon: Calendar, label: "الحضور والغياب", path: "/attendance" },
   { icon: BookOpen, label: "عالم المعرفة الذكي", path: "/subjects" },
   { icon: Award, label: "سجل الدرجات", path: "/grades" },
+  { icon: BookOpen, label: "الدروس الذكية الحديثة", path: "/lessons" },
   { icon: Heart, label: "لوحة التوجيه والإرشاد", path: "/guidance" },
   { icon: Settings, label: "العمليات", path: "/operations" },
   { icon: FileText, label: "التقارير الوزارية", path: "/reports" },

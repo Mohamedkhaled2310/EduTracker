@@ -11,7 +11,7 @@ import type {
 interface GetViolationsParams {
   page?: number;
   limit?: number;
-  severity?: "low" | "medium" | "high";
+  severity?: "first_degree" | "second_degree" | "third_degree" | "fourth_degree";
   status?: "pending" | "resolved";
   isChildProtectionCase?: boolean;
 }

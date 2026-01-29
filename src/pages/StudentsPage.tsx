@@ -71,15 +71,23 @@ export default function StudentsPage() {
   });
 
   const violations =
-    violationsData?.data?.violations.map(v => ({
-      name: v.studentName,
-      type: v.type,
-      desc: v.description,
-      date: v.date,
-      reporter: v.reportedBy,
-      status: v.status === "pending" ? "مفتوح" : "مغلق",
-      currentScore: v.severity === "high" ? "-3" : "-1",
-    })) || [];
+    violationsData?.data?.violations.map(v => {
+      const severityPoints: Record<string, string> = {
+        "first_degree": "-1",
+        "second_degree": "-2",
+        "third_degree": "-3",
+        "fourth_degree": "-4"
+      };
+      return {
+        name: v.studentName,
+        type: v.type,
+        desc: v.description,
+        date: v.date,
+        reporter: v.reportedBy,
+        status: v.status === "pending" ? "مفتوح" : "مغلق",
+        currentScore: severityPoints[v.severity] || "-1",
+      };
+    }) || [];
 
 
   const students = studentsData?.data?.students?.map(student => ({

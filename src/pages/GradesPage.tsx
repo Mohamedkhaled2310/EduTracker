@@ -14,12 +14,12 @@ import type { RecordGradeRequest } from "@/lib/api/types";
 
 export default function GradesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState<number | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [gradeLevel, setGradeLevel] = useState<string>("");
   const [performanceRange, setPerformanceRange] = useState<string>("");
 
-  const [formData, setFormData] = useState<RecordGradeRequest>({
+  const [formData, setFormData] = useState<Omit<RecordGradeRequest, 'studentId' | 'subjectId'> & { studentId: string | null; subjectId: string | null }>({
     studentId: null,
     subjectId: null,
     semester: 1,
@@ -93,7 +93,7 @@ export default function GradesPage() {
       return;
     }
 
-    // تحويل null => رقم فعلي
+    // Submit grade record
     recordMutation.mutate({
       ...formData,
       studentId: formData.studentId!,
@@ -356,22 +356,28 @@ export default function GradesPage() {
 
               {/* Summary */}
               {studentGrades.summary && (
-                <div className="grid grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-3 gap-4 mb-6">
                   <div className="bg-primary/10 rounded-lg p-3 text-center">
                     <p className="text-2xl font-bold text-primary">{studentGrades.summary.totalPercentage}%</p>
                     <p className="text-xs text-muted-foreground">المعدل العام</p>
-                  </div>
-                  <div className="bg-success/10 rounded-lg p-3 text-center">
-                    <p className="text-2xl font-bold text-success">{studentGrades.summary.gpa}</p>
-                    <p className="text-xs text-muted-foreground">GPA</p>
                   </div>
                   <div className="bg-accent/10 rounded-lg p-3 text-center">
                     <p className="text-2xl font-bold text-accent">{studentGrades.summary.rank}</p>
                     <p className="text-xs text-muted-foreground">الترتيب</p>
                   </div>
-                  <div className="bg-secondary rounded-lg p-3 text-center">
-                    <p className="text-2xl font-bold text-foreground">{studentGrades.summary.totalStudents}</p>
-                    <p className="text-xs text-muted-foreground">إجمالي الطلاب</p>
+                  <div className={`rounded-lg p-3 text-center ${studentGrades.summary.academicStatus === 'excellent' ? 'bg-green-500/10' :
+                    studentGrades.summary.academicStatus === 'needs-support' ? 'bg-yellow-500/10' :
+                      'bg-red-500/10'
+                    }`}>
+                    <p className={`text-2xl font-bold ${studentGrades.summary.academicStatus === 'excellent' ? 'text-green-600' :
+                      studentGrades.summary.academicStatus === 'needs-support' ? 'text-yellow-600' :
+                        'text-red-600'
+                      }`}>
+                      {studentGrades.summary.academicStatus === 'excellent' ? 'ممتاز' :
+                        studentGrades.summary.academicStatus === 'needs-support' ? 'يحتاج دعم' :
+                          'في خطر'}
+                    </p>
+                    <p className="text-xs text-muted-foreground">الحالة الأكاديمية</p>
                   </div>
                 </div>
               )}
