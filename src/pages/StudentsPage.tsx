@@ -4,10 +4,11 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { StudentCard } from "@/components/dashboard/StudentCard";
 import { StudentProfileModal } from "@/components/students/StudentProfileModal";
+import { AddStudentModal } from "@/components/students/AddStudentModal";
 import { ParentCommunication } from "@/components/students/ParentCommunication";
 import { StudentFilters } from "@/components/students/StudentFilters";
 import { ClassGroup } from "@/components/students/ClassGroup";
-import { Users, Smile, AlertCircle, MessageCircle, Search } from "lucide-react";
+import { Users, Smile, AlertCircle, MessageCircle, Search, UserPlus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -27,6 +28,7 @@ export default function StudentsPage() {
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [selectedStudent, setSelectedStudent] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [selectedGrade, setSelectedGrade] = useState("all");
@@ -142,7 +144,15 @@ export default function StudentsPage() {
   return (
     <DashboardLayout>
       <div className="mb-8">
-        <div className="flex items-center justify-start gap-3 mb-2">
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <Button
+            onClick={() => setIsAddStudentModalOpen(true)}
+            className="gap-2"
+            size="sm"
+          >
+            <UserPlus className="w-4 h-4" />
+            إضافة طالب جديد
+          </Button>
           <h1 className="text-2xl font-bold text-foreground text-right">لوحة شؤون الطلبة</h1>
         </div>
         <p className="text-muted-foreground text-right">
@@ -339,6 +349,12 @@ export default function StudentsPage() {
         student={selectedStudent}
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
+      />
+
+      {/* Add Student Modal */}
+      <AddStudentModal
+        open={isAddStudentModalOpen}
+        onOpenChange={setIsAddStudentModalOpen}
       />
     </DashboardLayout>
   );

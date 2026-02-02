@@ -126,14 +126,14 @@ export function StudentProfileModal({ student, open, onOpenChange }: StudentProf
         // Fetch violations
         const violationsResponse = await behaviorApi.getViolations();
         const studentViolations = violationsResponse.data.violations.filter(
-          v => v.studentId === student.id
+          v => v.studentId === student.studentId  // Fixed: use studentId (STU-2026-0021) not id (UUID)
         );
         setViolations(studentViolations);
 
         // Fetch positive behaviors
         const positiveResponse = await behaviorApi.getPositiveBehaviors();
         const studentPositive = positiveResponse.data.filter(
-          p => p.studentId === student.id
+          p => p.studentId === student.studentId  // Fixed: use studentId (STU-2026-0021) not id (UUID)
         );
         setPositiveBehaviors(studentPositive);
       } catch (error) {

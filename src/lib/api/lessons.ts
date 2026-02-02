@@ -67,5 +67,10 @@ export const lessonsApi = {
         return apiFetch<ApiResponse<null>>(`/questions/${questionId}`, {
             method: 'DELETE',
         });
+    },
+
+    // Alias for addQuestion
+    createQuestion: async (lessonId: string, data: CreateQuestionRequest): Promise<ApiResponse<Question>> => {
+        return lessonsApi.addQuestion(lessonId, data);
     }
 };

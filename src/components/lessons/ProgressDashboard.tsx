@@ -16,9 +16,16 @@ export default function ProgressDashboard({ studentId, language }: ProgressDashb
     const [stats, setStats] = useState<StudentStats | null>(null);
     const [loading, setLoading] = useState(true);
 
+    // Check if we have a valid student ID
+    const hasValidStudentId = studentId && studentId !== 'undefined' && studentId !== 'null';
+
     useEffect(() => {
-        fetchData();
-    }, [studentId]);
+        if (hasValidStudentId) {
+            fetchData();
+        } else {
+            setLoading(false);
+        }
+    }, [studentId, hasValidStudentId]);
 
     const fetchData = async () => {
         setLoading(true);
@@ -51,6 +58,25 @@ export default function ProgressDashboard({ studentId, language }: ProgressDashb
                 <CardContent className="py-12 text-center">
                     <p className="text-muted-foreground">
                         {language === 'ar' ? 'جاري التحميل...' : 'Loading...'}
+                    </p>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    // Show message for non-student users
+    if (!hasValidStudentId) {
+        return (
+            <Card>
+                <CardContent className="py-12 text-center">
+                    <BookOpen className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="text-lg font-semibold mb-2">
+                        {language === 'ar' ? 'لوحة التقدم للطلاب فقط' : 'Progress Dashboard for Students Only'}
+                    </h3>
+                    <p className="text-muted-foreground">
+                        {language === 'ar'
+                            ? 'هذه الصفحة متاحة للطلاب فقط لمتابعة تقدمهم الدراسي'
+                            : 'This page is available for students only to track their learning progress'}
                     </p>
                 </CardContent>
             </Card>

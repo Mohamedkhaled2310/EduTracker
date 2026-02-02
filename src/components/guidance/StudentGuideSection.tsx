@@ -143,7 +143,7 @@ export function StudentGuideSection() {
                             </span>
                         )}
                     </Button>
-                    <Button
+                    {/* <Button
                         variant="default"
                         size="sm"
                         onClick={() => handleAddViolation()}
@@ -151,7 +151,7 @@ export function StudentGuideSection() {
                     >
                         <Plus className="w-4 h-4" />
                         تسجيل مخالفة
-                    </Button>
+                    </Button> */}
                 </div>
                 <h3 className="text-lg font-bold text-foreground">دليل الطلاب</h3>
             </div>

@@ -147,6 +147,7 @@ export interface CreateStudentRequest {
   bloodType?: string;
   allergies?: string[];
   conditions?: string[];
+  studentCategory?: StudentCategory;
 }
 
 export interface PaginatedResponse<T> {
@@ -521,6 +522,7 @@ export interface Question {
   questionTextEn?: string;
   questionType: QuestionType;
   level: QuestionLevel;
+  difficultyLevel: QuestionLevel; // Alias for level
   options?: QuestionOption[];
   correctAnswer: any;
   explanation?: string;
@@ -578,7 +580,7 @@ export interface CreateQuestionRequest {
   questionText: string;
   questionTextEn?: string;
   questionType: QuestionType;
-  level: QuestionLevel;
+  difficultyLevel: QuestionLevel;
   options?: QuestionOption[];
   correctAnswer: any;
   explanation?: string;
