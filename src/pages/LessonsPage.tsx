@@ -13,7 +13,7 @@ import ProgressDashboard from '@/components/lessons/ProgressDashboard';
 import { LessonManagementModal } from '@/components/lessons/LessonManagementModal';
 import { QuestionManagementModal } from '@/components/lessons/QuestionManagementModal';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-
+import {API_BASE_URL} from '@/lib/api/config';
 export default function LessonsPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [subjects, setSubjects] = useState<any[]>([]);
@@ -53,7 +53,7 @@ export default function LessonsPage() {
     const fetchSubjects = async () => {
         try {
             // Assuming you have a subjects API
-            const response = await fetch(`http://localhost:5000/api/subjects`, {
+            const response = await fetch(`${API_BASE_URL}/subjects`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
