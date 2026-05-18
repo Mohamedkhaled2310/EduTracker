@@ -15,12 +15,48 @@ import { AttendanceCategoryView } from "@/components/attendance/AttendanceCatego
 
 type TabType = "record" | "categories";
 
+// Helper to convert section letter/name to section number
+const getSectionNumber = (section: string) => {
+  if (!section) return '';
+  const clean = section.trim().toUpperCase();
+  if (clean === 'A' || clean === 'أ' || clean.endsWith('- A') || clean.endsWith('- أ') || clean.endsWith('A') || clean.endsWith('- 1') || clean.endsWith('1')) return '1';
+  if (clean === 'B' || clean === 'ب' || clean.endsWith('- B') || clean.endsWith('- ب') || clean.endsWith('B') || clean.endsWith('- 2') || clean.endsWith('2')) return '2';
+  if (clean === 'C' || clean === 'ج' || clean.endsWith('- C') || clean.endsWith('- ج') || clean.endsWith('C') || clean.endsWith('- 3') || clean.endsWith('3')) return '3';
+  if (clean === 'D' || clean === 'د' || clean.endsWith('- D') || clean.endsWith('- د') || clean.endsWith('D') || clean.endsWith('- 4') || clean.endsWith('4')) return '4';
+  return section;
+};
+
+// Helper to get Arabic name of the day of the week
+const getArabicDayName = (dateString: string) => {
+  if (!dateString) return '';
+  try {
+    const date = new Date(dateString);
+    const day = date.getDay();
+    const days = [
+      'الأحد',
+      'الاثنين',
+      'الثلاثاء',
+      'الأربعاء',
+      'الخميس',
+      'الجمعة',
+      'السبت'
+    ];
+    return days[day];
+  } catch (e) {
+    return '';
+  }
+};
+
 export default function AttendancePage() {
   const [activeTab, setActiveTab] = useState<TabType>("record");
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
   const [attendanceRecords, setAttendanceRecords] = useState<Record<string, 'present' | 'absent' | 'late'>>({});
+  
+  // Interactive Filters
+  const [dayOfWeekFilter, setDayOfWeekFilter] = useState(() => getArabicDayName(format(new Date(), 'yyyy-MM-dd')));
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -101,16 +137,70 @@ export default function AttendancePage() {
   const absentCount = existingAttendance.filter(r => r.status === 'absent').length;
   const lateCount = existingAttendance.filter(r => r.status === 'late').length;
 
+  // Local filtering for displayed students / attendance based on status filter
+  const filteredExistingAttendance = existingAttendance.filter(record => {
+    if (statusFilter !== "all") {
+      const currentStatus = attendanceRecords[record.studentId] || record.status;
+      return currentStatus === statusFilter;
+    }
+    return true;
+  });
+
+  const filteredStudents = students.filter(student => {
+    if (statusFilter !== "all") {
+      const currentStatus = attendanceRecords[student.studentId];
+      return currentStatus === statusFilter;
+    }
+    return true;
+  });
+
+  // Calculate specific student stats
+  const getStudentStatsText = (studentId: string) => {
+    const student = students.find(s => s.studentId === studentId);
+    if (!student || !student.attendanceStats) return '(حضور: 0 | غياب: 0 | تأخير: 0)';
+    
+    const total = student.attendanceStats.totalDays || 0;
+    const absent = student.attendanceStats.absentDays || 0;
+    const late = student.attendanceStats.lateDays || 0;
+    const present = Math.max(0, total - absent - late);
+    
+    return `(حضور: ${present} | غياب: ${absent} | تأخير: ${late})`;
+  };
+
+  // Interactive handler for Date change (updates Day select automatically)
+  const handleDateChange = (newDate: string) => {
+    setSelectedDate(newDate);
+    const dayName = getArabicDayName(newDate);
+    setDayOfWeekFilter(dayName);
+  };
+
+  // Interactive handler for Day change (calculates date in current week automatically)
+  const handleDayChange = (dayName: string) => {
+    setDayOfWeekFilter(dayName);
+    if (dayName === "all") return;
+    const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+    const targetDayIndex = days.indexOf(dayName);
+    if (targetDayIndex === -1) return;
+    
+    const today = new Date();
+    const currentDayIndex = today.getDay();
+    const diff = targetDayIndex - currentDayIndex;
+    const targetDate = new Date(today);
+    targetDate.setDate(today.getDate() + diff);
+    
+    setSelectedDate(format(targetDate, 'yyyy-MM-dd'));
+  };
+
   return (
     <DashboardLayout>
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col md:flex-row-reverse md:items-center justify-between gap-4 mb-4">
           <div className="text-right flex-1">
             <h1 className="text-2xl font-bold text-foreground">سجل الحضور والغياب</h1>
             <p className="text-muted-foreground">تسجيل ومتابعة حضور الطلاب</p>
           </div>
           {activeTab === "record" && (
-            <Button onClick={handleSaveAttendance} disabled={recordMutation.isPending} className="gap-2">
+            <Button onClick={handleSaveAttendance} disabled={recordMutation.isPending} className="gap-2 self-end">
               <Save className="w-4 h-4" />
               {recordMutation.isPending ? "جاري الحفظ..." : "حفظ الحضور"}
             </Button>
@@ -143,21 +233,45 @@ export default function AttendancePage() {
       {/* Tab Content */}
       {activeTab === "record" ? (
         <>
-          {/* Filters */}
-          <div className="bg-card rounded-xl p-6 shadow-sm border border-border mb-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Filters - 5-column RTL grid */}
+          <div className="bg-card rounded-xl p-6 shadow-sm border border-border mb-6" dir="rtl">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 text-right">
+              {/* Date Filter */}
               <div className="space-y-2">
-                <Label>التاريخ</Label>
+                <Label className="block text-right">التاريخ</Label>
                 <Input
                   type="date"
                   value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
+                  onChange={(e) => handleDateChange(e.target.value)}
+                  className="text-right"
                 />
               </div>
+
+              {/* Day Filter */}
               <div className="space-y-2">
-                <Label>الصف</Label>
+                <Label className="block text-right">اليوم</Label>
+                <Select value={dayOfWeekFilter} onValueChange={handleDayChange}>
+                  <SelectTrigger className="text-right">
+                    <SelectValue placeholder="اختر اليوم" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">جميع الأيام</SelectItem>
+                    <SelectItem value="الأحد">الأحد</SelectItem>
+                    <SelectItem value="الاثنين">الاثنين</SelectItem>
+                    <SelectItem value="الثلاثاء">الثلاثاء</SelectItem>
+                    <SelectItem value="الأربعاء">الأربعاء</SelectItem>
+                    <SelectItem value="الخميس">الخميس</SelectItem>
+                    <SelectItem value="الجمعة">الجمعة</SelectItem>
+                    <SelectItem value="السبت">السبت</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Grade Filter */}
+              <div className="space-y-2">
+                <Label className="block text-right">الصف</Label>
                 <Select value={selectedGrade} onValueChange={setSelectedGrade}>
-                  <SelectTrigger>
+                  <SelectTrigger className="text-right">
                     <SelectValue placeholder="اختر الصف" />
                   </SelectTrigger>
                   <SelectContent>
@@ -168,32 +282,50 @@ export default function AttendancePage() {
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Section Filter */}
               <div className="space-y-2">
-                <Label>الفصل</Label>
+                <Label className="block text-right">الفصل</Label>
                 <Select value={selectedClass} onValueChange={setSelectedClass}>
-                  <SelectTrigger>
+                  <SelectTrigger className="text-right">
                     <SelectValue placeholder="اختر الفصل" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="فصل الصف الأول - A">فصل أ</SelectItem>
-                    <SelectItem value="فصل الصف الأول - B">فصل ب</SelectItem>
-                    <SelectItem value="فصل الصف الأول - C">فصل ج</SelectItem>
+                    <SelectItem value="فصل الصف الأول - 1">فصل 1</SelectItem>
+                    <SelectItem value="فصل الصف الأول - 2">فصل 2</SelectItem>
+                    <SelectItem value="فصل الصف الأول - 3">فصل 3</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Status Type Filter */}
+              <div className="space-y-2">
+                <Label className="block text-right">نوع الحالة</Label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="text-right">
+                    <SelectValue placeholder="تصفية حسب الحالة" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">جميع الحالات</SelectItem>
+                    <SelectItem value="present">حاضر</SelectItem>
+                    <SelectItem value="absent">غائب</SelectItem>
+                    <SelectItem value="late">متأخر</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          {/* Stats - Grid flowing RTL */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6" dir="rtl">
             <StatCard icon={Users} label="إجمالي الطلاب" value={students.length.toString()} />
             <StatCard icon={Check} label="حاضر" value={presentCount.toString()} trendType="positive" />
-            <StatCard icon={X} label="غائب" value={absentCount.toString()} trendType="negative" />
             <StatCard icon={Clock} label="متأخر" value={lateCount.toString()} trendType="neutral" />
+            <StatCard icon={X} label="غائب" value={absentCount.toString()} trendType="negative" />
           </div>
 
-          {/* Attendance Table */}
-          <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
+          {/* Attendance Table - dir="rtl" for right-side list and left-side buttons */}
+          <div className="bg-card rounded-xl p-6 shadow-sm border border-border" dir="rtl">
             <div className="flex items-center justify-end gap-2 mb-6">
               <h3 className="text-lg font-bold text-foreground">قائمة الطلاب</h3>
               <Calendar className="w-5 h-5 text-primary" />
@@ -207,11 +339,11 @@ export default function AttendancePage() {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full text-right">
                   <thead>
                     <tr className="border-b border-border">
                       <th className="text-right py-3 px-4 text-muted-foreground font-medium">اسم الطالب</th>
-                      <th className="text-right py-3 px-4 text-muted-foreground font-medium">الصف</th>
+                      <th className="text-right py-3 px-4 text-muted-foreground font-medium">الصف والفصل</th>
                       <th className="text-right py-3 px-4 text-muted-foreground font-medium">رقم الطالب</th>
                       <th className="text-right py-3 px-4 text-muted-foreground font-medium">وقت الدخول</th>
                       <th className="text-right py-3 px-4 text-muted-foreground font-medium">الحالة</th>
@@ -219,89 +351,116 @@ export default function AttendancePage() {
                   </thead>
                   <tbody>
                     {existingAttendance.length > 0 ? (
-                      existingAttendance.map((record) => (
-                        <tr key={record.id} className="border-b border-border last:border-0">
-                          <td className="py-4 px-4 text-foreground font-medium">{record.studentName}</td>
-                          <td className="py-4 px-4 text-muted-foreground">{selectedGrade || '-'}</td>
-                          <td className="py-4 px-4 text-foreground">{record.studentId}</td>
-                          <td className="py-4 px-4 text-muted-foreground">{record.checkInTime || '-'}</td>
+                      filteredExistingAttendance.length > 0 ? (
+                        filteredExistingAttendance.map((record) => (
+                          <tr key={record.id} className="border-b border-border last:border-0 hover:bg-secondary/10 transition-colors">
+                            <td className="py-4 px-4 text-foreground font-medium text-right">{record.studentName}</td>
+                            <td className="py-4 px-4 text-muted-foreground text-right">
+                              {selectedGrade} {getSectionNumber(selectedClass)}
+                            </td>
+                            <td className="py-4 px-4 text-foreground text-right">{record.studentId}</td>
+                            <td className="py-4 px-4 text-muted-foreground text-right">{record.checkInTime || '-'}</td>
 
-                          <td className="py-4 px-4">
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => handleStatusChange(record.studentId, 'present')}
-                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${(attendanceRecords[record.studentId] || record.status) === 'present'
-                                    ? 'bg-success text-success-foreground'
-                                    : 'bg-success/10 text-success hover:bg-success/20'
-                                  }`}
-                              >
-                                <Check className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleStatusChange(record.studentId, 'late')}
-                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${(attendanceRecords[record.studentId] || record.status) === 'late'
-                                    ? 'bg-warning text-warning-foreground'
-                                    : 'bg-warning/10 text-warning hover:bg-warning/20'
-                                  }`}
-                              >
-                                <Clock className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleStatusChange(record.studentId, 'absent')}
-                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${(attendanceRecords[record.studentId] || record.status) === 'absent'
-                                    ? 'bg-destructive text-destructive-foreground'
-                                    : 'bg-destructive/10 text-destructive hover:bg-destructive/20'
-                                  }`}
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
-                            </div>
+                            <td className="py-4 px-4 text-right">
+                              <div className="flex flex-col items-end">
+                                <div className="flex gap-2 justify-end">
+                                  <button
+                                    onClick={() => handleStatusChange(record.studentId, 'present')}
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${(attendanceRecords[record.studentId] || record.status) === 'present'
+                                        ? 'bg-success text-success-foreground'
+                                        : 'bg-success/10 text-success hover:bg-success/20'
+                                      }`}
+                                  >
+                                    <Check className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleStatusChange(record.studentId, 'late')}
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${(attendanceRecords[record.studentId] || record.status) === 'late'
+                                        ? 'bg-warning text-warning-foreground'
+                                        : 'bg-warning/10 text-warning hover:bg-warning/20'
+                                      }`}
+                                  >
+                                    <Clock className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleStatusChange(record.studentId, 'absent')}
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${(attendanceRecords[record.studentId] || record.status) === 'absent'
+                                        ? 'bg-destructive text-destructive-foreground'
+                                        : 'bg-destructive/10 text-destructive hover:bg-destructive/20'
+                                      }`}
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                </div>
+                                <span className="text-xs text-muted-foreground mt-1 font-normal block text-right">
+                                  {getStudentStatsText(record.studentId)}
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={5} className="py-8 text-center text-muted-foreground">
+                            لا توجد بيانات مطابقة للفلاتر المحددة
                           </td>
-
                         </tr>
-                      ))
+                      )
                     ) : students.length > 0 ? (
-                      students.map((student) => (
-                        <tr key={student.id} className="border-b border-border last:border-0">
-
-                          <td className="py-4 px-4 text-foreground font-medium">{student.name}</td>
-                          <td className="py-4 px-4 text-muted-foreground">{student.grade}</td>
-                          <td className="py-4 px-4 text-foreground">{student.studentId}</td>
-                          <td className="py-4 px-4 text-muted-foreground">-</td>
-                          <td className="py-4 px-4">
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => handleStatusChange(student.studentId, 'present')}
-                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${attendanceRecords[student.studentId] === 'present'
-                                    ? 'bg-success text-success-foreground'
-                                    : 'bg-success/10 text-success hover:bg-success/20'
-                                  }`}
-                              >
-                                <Check className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleStatusChange(student.studentId, 'late')}
-                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${attendanceRecords[student.studentId] === 'late'
-                                    ? 'bg-warning text-warning-foreground'
-                                    : 'bg-warning/10 text-warning hover:bg-warning/20'
-                                  }`}
-                              >
-                                <Clock className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleStatusChange(student.studentId, 'absent')}
-                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${attendanceRecords[student.studentId] === 'absent'
-                                    ? 'bg-destructive text-destructive-foreground'
-                                    : 'bg-destructive/10 text-destructive hover:bg-destructive/20'
-                                  }`}
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
-                            </div>
+                      filteredStudents.length > 0 ? (
+                        filteredStudents.map((student) => (
+                          <tr key={student.id} className="border-b border-border last:border-0 hover:bg-secondary/10 transition-colors">
+                            <td className="py-4 px-4 text-foreground font-medium text-right">{student.name}</td>
+                            <td className="py-4 px-4 text-muted-foreground text-right">
+                              {student.grade} {getSectionNumber(student.section)}
+                            </td>
+                            <td className="py-4 px-4 text-foreground text-right">{student.studentId}</td>
+                            <td className="py-4 px-4 text-muted-foreground text-right">-</td>
+                            <td className="py-4 px-4 text-right">
+                              <div className="flex flex-col items-end">
+                                <div className="flex gap-2 justify-end">
+                                  <button
+                                    onClick={() => handleStatusChange(student.studentId, 'present')}
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${attendanceRecords[student.studentId] === 'present'
+                                        ? 'bg-success text-success-foreground'
+                                        : 'bg-success/10 text-success hover:bg-success/20'
+                                      }`}
+                                  >
+                                    <Check className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleStatusChange(student.studentId, 'late')}
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${attendanceRecords[student.studentId] === 'late'
+                                        ? 'bg-warning text-warning-foreground'
+                                        : 'bg-warning/10 text-warning hover:bg-warning/20'
+                                      }`}
+                                  >
+                                    <Clock className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleStatusChange(student.studentId, 'absent')}
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${attendanceRecords[student.studentId] === 'absent'
+                                        ? 'bg-destructive text-destructive-foreground'
+                                        : 'bg-destructive/10 text-destructive hover:bg-destructive/20'
+                                      }`}
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                </div>
+                                <span className="text-xs text-muted-foreground mt-1 font-normal block text-right">
+                                  {getStudentStatsText(student.studentId)}
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={5} className="py-8 text-center text-muted-foreground">
+                            لا توجد بيانات مطابقة للفلاتر المحددة
                           </td>
-
                         </tr>
-                      ))
+                      )
                     ) : (
                       <tr>
                         <td colSpan={5} className="py-8 text-center text-muted-foreground">

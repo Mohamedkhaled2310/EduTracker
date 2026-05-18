@@ -57,12 +57,12 @@ export default function TeachersPage() {
   return (
     <DashboardLayout>
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-foreground">أداء المعلمين</h1>
+        <div className="flex flex-col md:flex-row-reverse md:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-3 justify-end">
+            <h1 className="text-2xl font-bold text-foreground text-right">أداء المعلمين</h1>
             <Users className="w-8 h-8 text-primary" />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 justify-end flex-wrap">
             <Button
               onClick={() => setClassManagementOpen(true)}
               variant="outline"

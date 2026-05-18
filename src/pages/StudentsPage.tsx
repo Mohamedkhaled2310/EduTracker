@@ -143,21 +143,19 @@ export default function StudentsPage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8">
-        <div className="flex items-center justify-between gap-3 mb-2">
-          <Button
-            onClick={() => setIsAddStudentModalOpen(true)}
-            className="gap-2"
-            size="sm"
-          >
-            <UserPlus className="w-4 h-4" />
-            إضافة طالب جديد
-          </Button>
-          <h1 className="text-2xl font-bold text-foreground text-right">لوحة شؤون الطلبة</h1>
-        </div>
+      <div className="mb-8 flex flex-col items-end gap-3">
+        <h1 className="text-2xl font-bold text-foreground text-right">لوحة شؤون الطلبة</h1>
         <p className="text-muted-foreground text-right">
-          متابعة السلوك والحضور - بإشراف: <span className="text-accent">البازية البلوشي</span>
+          متابعة السلوك والحضور - بإشراف: <span className="text-accent">اليازية البلوشي</span>
         </p>
+        <Button
+          onClick={() => setIsAddStudentModalOpen(true)}
+          className="gap-2 self-end"
+          size="sm"
+        >
+          <UserPlus className="w-4 h-4" />
+          إضافة طالب جديد
+        </Button>
       </div>
 
       {/* Tabs */}
@@ -264,26 +262,28 @@ export default function StudentsPage() {
       {/* Students Directory - Shows for both overview and directory tabs */}
       {(activeTab === "overview" || activeTab === "directory") && (
         <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col md:flex-row-reverse md:items-center justify-between gap-4 mb-6">
+            <h3 className="text-lg font-bold text-foreground text-right">دليل الطلاب</h3>
+            <div className="flex flex-row-reverse items-center gap-3 flex-wrap">
               <div className="relative">
                 <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="بحث عن طالب..."
-                  className="pr-10 w-64"
+                  className="text-right pr-10 w-64"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <StudentFilters
-                selectedGrade={selectedGrade}
-                selectedCategory={selectedCategory}
-                onGradeChange={setSelectedGrade}
-                onCategoryChange={setSelectedCategory}
-                onClearFilters={handleClearFilters}
-              />
+              <div dir="rtl">
+                <StudentFilters
+                  selectedGrade={selectedGrade}
+                  selectedCategory={selectedCategory}
+                  onGradeChange={setSelectedGrade}
+                  onCategoryChange={setSelectedCategory}
+                  onClearFilters={handleClearFilters}
+                />
+              </div>
             </div>
-            <h3 className="text-lg font-bold text-foreground">دليل الطلاب</h3>
           </div>
 
           {isLoading ? (

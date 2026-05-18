@@ -108,32 +108,28 @@ export default function GradesPage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div className="text-right">
-            <h1 className="text-2xl font-bold text-foreground">سجل الدرجات</h1>
-            <p className="text-muted-foreground">تسجيل ومتابعة درجات الطلاب</p>
-          </div>
-
-          <Dialog
-            open={isDialogOpen}
-            onOpenChange={(open) => {
-              setIsDialogOpen(open);
-              if (open && selectedStudent) {
-                setFormData(prev => ({
-                  ...prev,
-                  studentId: selectedStudent
-                }));
-              }
-              if (!open) resetForm();
-            }}
-          >
-            <DialogTrigger asChild>
-              <Button className="gap-2" disabled={!selectedStudent}>
-                <Plus className="w-4 h-4" />
-                إضافة درجة
-              </Button>
-            </DialogTrigger>
+      <div className="mb-8 flex flex-col items-end gap-3">
+        <h1 className="text-2xl font-bold text-foreground text-right">سجل الدرجات</h1>
+        <p className="text-muted-foreground text-right">تسجيل ومتابعة درجات الطلاب</p>
+        <Dialog
+          open={isDialogOpen}
+          onOpenChange={(open) => {
+            setIsDialogOpen(open);
+            if (open && selectedStudent) {
+              setFormData(prev => ({
+                ...prev,
+                studentId: selectedStudent
+              }));
+            }
+            if (!open) resetForm();
+          }}
+        >
+          <DialogTrigger asChild>
+            <Button className="gap-2 self-end" disabled={!selectedStudent}>
+              <Plus className="w-4 h-4" />
+              إضافة درجة
+            </Button>
+          </DialogTrigger>
             <DialogContent className="max-w-md">
               <DialogHeader>
                 <DialogTitle className="text-right">تسجيل درجة جديدة</DialogTitle>
@@ -244,11 +240,9 @@ export default function GradesPage() {
               </form>
             </DialogContent>
           </Dialog>
-
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" dir="rtl">
         {/* Students List */}
         <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
           <div className="flex items-center justify-end gap-2 mb-4">
@@ -313,8 +307,12 @@ export default function GradesPage() {
 
         {/* Grades Display */}
         <div className="lg:col-span-2 bg-card rounded-xl p-6 shadow-sm border border-border">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex gap-3">
+          <div className="flex flex-col md:flex-row-reverse md:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-2 justify-end">
+              <h3 className="text-lg font-bold text-foreground text-right">سجل الدرجات</h3>
+              <GraduationCap className="w-5 h-5 text-primary" />
+            </div>
+            <div className="flex gap-3 justify-end" dir="rtl">
               <Select value={performanceRange} onValueChange={setPerformanceRange}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="تصفية حسب النسبة" />
@@ -326,10 +324,6 @@ export default function GradesPage() {
                   <SelectItem value="70andAbove">70 وما فوق</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-lg font-bold text-foreground">سجل الدرجات</h3>
-              <GraduationCap className="w-5 h-5 text-primary" />
             </div>
           </div>
 

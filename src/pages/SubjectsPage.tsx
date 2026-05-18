@@ -144,22 +144,19 @@ export default function SubjectsPage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div className="text-right">
-            <h1 className="text-2xl font-bold text-foreground">عالم المعرفة الذكي</h1>
-            <p className="text-muted-foreground">إضافة وتعديل المواد الدراسية</p>
-          </div>
-          <Dialog open={isDialogOpen} onOpenChange={(open) => {
-            setIsDialogOpen(open);
-            if (!open) resetForm();
-          }}>
-            <DialogTrigger asChild>
-              <Button className="gap-2">
-                <Plus className="w-4 h-4" />
-                إضافة مادة جديدة
-              </Button>
-            </DialogTrigger>
+      <div className="mb-8 flex flex-col items-end gap-3">
+        <h1 className="text-2xl font-bold text-foreground text-right">عالم المعرفة الذكي</h1>
+        <p className="text-muted-foreground text-right">إضافة وتعديل المواد الدراسية</p>
+        <Dialog open={isDialogOpen} onOpenChange={(open) => {
+          setIsDialogOpen(open);
+          if (!open) resetForm();
+        }}>
+          <DialogTrigger asChild>
+            <Button className="gap-2 self-end">
+              <Plus className="w-4 h-4" />
+              إضافة مادة جديدة
+            </Button>
+          </DialogTrigger>
             <DialogContent className="max-w-md">
               <DialogHeader>
                 <DialogTitle className="text-right">
@@ -251,15 +248,22 @@ export default function SubjectsPage() {
               </form>
             </DialogContent>
           </Dialog>
-
         </div>
-      </div>
 
       {/* Filters */}
-      <div className="bg-card rounded-xl p-6 shadow-sm border border-border mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="bg-card rounded-xl p-6 shadow-sm border border-border mb-6" dir="rtl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-right">
+          <div className="relative">
+            <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="بحث عن مادة..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pr-10 text-right"
+            />
+          </div>
           <Select value={filterGrade} onValueChange={setFilterGrade}>
-            <SelectTrigger>
+            <SelectTrigger className="text-right">
               <SelectValue placeholder="تصفية حسب المرحلة" />
             </SelectTrigger>
             <SelectContent>
@@ -271,7 +275,7 @@ export default function SubjectsPage() {
             </SelectContent>
           </Select>
           <Select value={filterType} onValueChange={setFilterType}>
-            <SelectTrigger>
+            <SelectTrigger className="text-right">
               <SelectValue placeholder="تصفية حسب النوع" />
             </SelectTrigger>
             <SelectContent>
@@ -280,24 +284,14 @@ export default function SubjectsPage() {
               <SelectItem value="activity">نشاط</SelectItem>
             </SelectContent>
           </Select>
-          <div className="relative">
-            <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="بحث عن مادة..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pr-10"
-            />
-          </div>
-
         </div>
       </div>
 
       {/* Subjects Grid */}
       <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
         <div className="flex items-center justify-end gap-2 mb-6">
-          <h3 className="text-lg font-bold text-foreground">قائمة المواد</h3>
           <BookOpen className="w-5 h-5 text-primary" />
+          <h3 className="text-lg font-bold text-foreground">قائمة المواد</h3>
         </div>
 
         {isLoading ? (

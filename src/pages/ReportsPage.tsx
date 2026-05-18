@@ -3,7 +3,7 @@ import { FileText, Download, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const pendingReports = [
-  { title: "التقرير الأسبوعي للأداء الأكاديمي", type: "أسبوعي", date: "2025-05-23", author: "البازية المهيري", status: "pending" },
+  { title: "التقرير الأسبوعي للأداء الأكاديمي", type: "أسبوعي", date: "2025-05-23", author: "اليازية المهيري", status: "pending" },
   { title: "حادث بسيط في الفصل", type: "حادث", date: "2025-05-22", author: "هند العامري", status: "approved" },
 ];
 

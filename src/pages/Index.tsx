@@ -94,7 +94,7 @@ const performanceChartData = useMemo(() => {
           <div className="text-right">
             <h1 className="text-2xl font-bold text-foreground">مدرسة المستقبل - الحلقة الأولى</h1>
             <p className="text-muted-foreground">
-              لوحة القيادة المدرسية - بإشراف: <span className="text-accent">البازية البلوشي</span>
+              لوحة القيادة المدرسية - بإشراف: <span className="text-accent">اليازية البلوشي</span>
             </p>
           </div>
 

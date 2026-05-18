@@ -39,7 +39,7 @@ export function TopBar() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="gap-2 font-semibold">
-              البازية البلوشي
+              اليازية البلوشي
               <span className="text-muted-foreground">(مديرة المدرسة)</span>
               <ChevronDown className="w-4 h-4" />
             </Button>

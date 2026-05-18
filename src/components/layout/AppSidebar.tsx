@@ -11,7 +11,8 @@ import {
   ChevronRight,
   Calendar,
   BookOpen,
-  Award
+  Award,
+  ClipboardList
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +30,7 @@ const menuItems = [
   { icon: Award, label: "سجل الدرجات", path: "/grades" },
   { icon: BookOpen, label: "الدروس الذكية الحديثة", path: "/lessons" },
   { icon: Heart, label: "لوحة التوجيه والإرشاد", path: "/guidance" },
+  { icon: ClipboardList, label: "الخطة التشغيلية", path: "/operational-plan" },
   { icon: Settings, label: "العمليات", path: "/operations" },
   { icon: FileText, label: "التقارير الوزارية", path: "/reports" },
   { icon: Bot, label: "المساعد الذكي", path: "/assistant" },
@@ -83,12 +85,12 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
         <div className="flex items-center gap-3 justify-end">
           {isOpen && (
             <div className="text-right">
-              <p className="font-semibold text-sm">البازية البلوشي</p>
+              <p className="font-semibold text-sm">اليازية البلوشي</p>
               <p className="text-xs text-sidebar-foreground/70">مديرة المدرسة</p>
             </div>
           )}
           <div className="w-10 h-10 bg-sidebar-primary rounded-full flex items-center justify-center">
-            <span className="text-sidebar-primary-foreground font-bold">ب</span>
+            <span className="text-sidebar-primary-foreground font-bold">ي</span>
           </div>
         </div>
       </div>

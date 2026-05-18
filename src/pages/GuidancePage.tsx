@@ -32,7 +32,7 @@ export default function GuidancePage() {
           <h1 className="text-2xl font-bold text-foreground">لوحة التوجيه والإرشاد</h1>
         </div>
         <p className="text-muted-foreground text-right">
-          الرعاية السلوكية والأكاديمية - بإشراف: <span className="text-accent">البازية البلوشي</span>
+          الرعاية السلوكية والأكاديمية - بإشراف: <span className="text-accent">اليازية البلوشي</span>
         </p>
       </div>
 

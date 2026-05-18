@@ -18,6 +18,7 @@ import AttendancePage from "./pages/AttendancePage";
 import SubjectsPage from "./pages/SubjectsPage";
 import GradesPage from "./pages/GradesPage";
 import LessonsPage from "./pages/LessonsPage";
+import OperationalPlanPage from "./pages/OperationalPlanPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/teachers" element={<ProtectedRoute><TeachersPage /></ProtectedRoute>} />
             <Route path="/students" element={<ProtectedRoute><StudentsPage /></ProtectedRoute>} />
             <Route path="/guidance" element={<ProtectedRoute><GuidancePage /></ProtectedRoute>} />
+            <Route path="/operational-plan" element={<ProtectedRoute><OperationalPlanPage /></ProtectedRoute>} />
             <Route path="/operations" element={<ProtectedRoute><OperationsPage /></ProtectedRoute>} />
             <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
             <Route path="/assistant" element={<ProtectedRoute><AssistantPage /></ProtectedRoute>} />
