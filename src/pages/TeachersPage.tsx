@@ -56,13 +56,13 @@ export default function TeachersPage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8">
-        <div className="flex flex-col md:flex-row-reverse md:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3 justify-end">
-            <h1 className="text-2xl font-bold text-foreground text-right">أداء المعلمين</h1>
+      <div className="mb-8" dir="rtl">
+        <div className="flex flex-col gap-4 mb-6">
+          <div className="flex items-center gap-3">
             <Users className="w-8 h-8 text-primary" />
+            <h1 className="text-2xl font-bold text-foreground">أداء المعلمين</h1>
           </div>
-          <div className="flex items-center gap-2 justify-end flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap">
             <Button
               onClick={() => setClassManagementOpen(true)}
               variant="outline"
@@ -85,8 +85,8 @@ export default function TeachersPage() {
         <TeacherOverviewStats />
       </div>
 
-      <div className="bg-card rounded-xl p-8 shadow-sm border border-border">
-        <h2 className="text-xl font-bold text-foreground mb-6 text-right">قائمة المعلمين</h2>
+      <div className="bg-card rounded-xl p-8 shadow-sm border border-border" dir="rtl">
+        <h2 className="text-xl font-bold text-foreground mb-6">قائمة المعلمين</h2>
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(9)].map((_, i) => (

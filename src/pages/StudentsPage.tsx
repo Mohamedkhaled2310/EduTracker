@@ -143,44 +143,48 @@ export default function StudentsPage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8 flex flex-col items-end gap-3">
-        <h1 className="text-2xl font-bold text-foreground text-right">لوحة شؤون الطلبة</h1>
-        <p className="text-muted-foreground text-right">
-          متابعة السلوك والحضور - بإشراف: <span className="text-accent">اليازية البلوشي</span>
-        </p>
-        <Button
-          onClick={() => setIsAddStudentModalOpen(true)}
-          className="gap-2 self-end"
-          size="sm"
-        >
-          <UserPlus className="w-4 h-4" />
-          إضافة طالب جديد
-        </Button>
-      </div>
+      <div className="mb-8" dir="rtl">
+        <div className="flex flex-col gap-3 mb-6">
+          <h1 className="text-2xl font-bold text-foreground">لوحة شؤون الطلبة</h1>
+          <p className="text-muted-foreground">
+            متابعة السلوك والحضور - بإشراف: <span className="text-accent">اليازية البلوشي</span>
+          </p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              onClick={() => setIsAddStudentModalOpen(true)}
+              className="gap-2"
+              size="sm"
+            >
+              <UserPlus className="w-4 h-4" />
+              إضافة طالب جديد
+            </Button>
+          </div>
+        </div>
 
-      {/* Tabs */}
-      <div className="flex gap-2 mb-6 justify-end">
-        <Button
-          variant={activeTab === "communication" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setActiveTab("communication")}
-        >
-          تواصل أولياء الأمور
-        </Button>
-        <Button
-          variant={activeTab === "directory" ? "default" : "secondary"}
-          size="sm"
-          onClick={() => setActiveTab("directory")}
-        >
-          دليل الطلاب
-        </Button>
-        <Button
-          variant={activeTab === "overview" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setActiveTab("overview")}
-        >
-          نظرة عامة
-        </Button>
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6">
+          <Button
+            variant={activeTab === "overview" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setActiveTab("overview")}
+          >
+            نظرة عامة
+          </Button>
+          <Button
+            variant={activeTab === "directory" ? "default" : "secondary"}
+            size="sm"
+            onClick={() => setActiveTab("directory")}
+          >
+            دليل الطلاب
+          </Button>
+          <Button
+            variant={activeTab === "communication" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setActiveTab("communication")}
+          >
+            تواصل أولياء الأمور
+          </Button>
+        </div>
       </div>
 
       {/* Stats - Always visible */}

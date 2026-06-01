@@ -144,111 +144,120 @@ export default function SubjectsPage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8 flex flex-col items-end gap-3">
-        <h1 className="text-2xl font-bold text-foreground text-right">عالم المعرفة الذكي</h1>
-        <p className="text-muted-foreground text-right">إضافة وتعديل المواد الدراسية</p>
-        <Dialog open={isDialogOpen} onOpenChange={(open) => {
-          setIsDialogOpen(open);
-          if (!open) resetForm();
-        }}>
-          <DialogTrigger asChild>
-            <Button className="gap-2 self-end">
-              <Plus className="w-4 h-4" />
-              إضافة مادة جديدة
-            </Button>
-          </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle className="text-right">
-                  {editingSubject ? "تعديل المادة" : "إضافة مادة جديدة"}
-                </DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label>اسم المادة *</Label>
-                  <Input
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="الرياضيات"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>رمز المادة *</Label>
-                  <Input
-                    value={formData.code}
-                    onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-                    placeholder="MATH101"
-                    dir="ltr"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>المرحلة الدراسية *</Label>
-                  <Select
-                    value={formData.gradeLevel}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, gradeLevel: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="اختر المرحلة" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="First Grade">الصف الأول</SelectItem>
-                      <SelectItem value="Second Grade">الصف الثاني</SelectItem>
-                      <SelectItem value="Third Grade">الصف الثالث</SelectItem>
-                      <SelectItem value="Fourth Grade">الصف الرابع</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>درجة النجاح</Label>
-                  <Input
-                    type="number"
-                    value={formData.passingGrade}
-                    onChange={(e) => setFormData(prev => ({ ...prev, passingGrade: parseInt(e.target.value) }))}
-                    min={0}
-                    max={100}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>نوع المادة *</Label>
-                  <Select
-                    value={formData.subjectType}
-                    onValueChange={(value: 'basic' | 'activity') => setFormData(prev => ({ ...prev, subjectType: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="اختر نوع المادة" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="basic">أساسية</SelectItem>
-                      <SelectItem value="activity">نشاط</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>الحالة</Label>
-                  <Select
-                    value={formData.status}
-                    onValueChange={(value: 'active' | 'inactive') => setFormData(prev => ({ ...prev, status: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="active">نشط</SelectItem>
-                      <SelectItem value="inactive">غير نشط</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={createMutation.isPending || updateMutation.isPending}
-                >
-                  {createMutation.isPending || updateMutation.isPending ? "جاري الحفظ..." : "حفظ"}
+      <div className="mb-8" dir="rtl">
+        <div className="flex flex-col gap-3 mb-6">
+          <h1 className="text-2xl font-bold text-foreground">عالم المعرفة الذكي</h1>
+          <p className="text-muted-foreground">إضافة وتعديل المواد الدراسية</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Dialog open={isDialogOpen} onOpenChange={(open) => {
+              setIsDialogOpen(open);
+              if (!open) resetForm();
+            }}>
+              <DialogTrigger asChild>
+                <Button className="gap-2">
+                  <Plus className="w-4 h-4" />
+                  إضافة مادة جديدة
                 </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
+              </DialogTrigger>
+              <DialogContent className="max-w-md" dir="rtl">
+                <DialogHeader>
+                  <DialogTitle className="text-right">
+                    {editingSubject ? "تعديل المادة" : "إضافة مادة جديدة"}
+                  </DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4 text-right">
+                  <div className="space-y-2">
+                    <Label>اسم المادة *</Label>
+                    <Input
+                      value={formData.name}
+                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="الرياضيات"
+                      className="text-right"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>رمز المادة *</Label>
+                    <Input
+                      value={formData.code}
+                      onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
+                      placeholder="MATH101"
+                      dir="ltr"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>المرحلة الدراسية *</Label>
+                    <Select
+                      value={formData.gradeLevel}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, gradeLevel: value }))}
+                      dir="rtl"
+                    >
+                      <SelectTrigger className="text-right">
+                        <SelectValue placeholder="اختر المرحلة" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="First Grade">الصف الأول</SelectItem>
+                        <SelectItem value="Second Grade">الصف الثاني</SelectItem>
+                        <SelectItem value="Third Grade">الصف الثالث</SelectItem>
+                        <SelectItem value="Fourth Grade">الصف الرابع</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>درجة النجاح</Label>
+                    <Input
+                      type="number"
+                      value={formData.passingGrade}
+                      onChange={(e) => setFormData(prev => ({ ...prev, passingGrade: parseInt(e.target.value) }))}
+                      min={0}
+                      max={100}
+                      className="text-right"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>نوع المادة *</Label>
+                    <Select
+                      value={formData.subjectType}
+                      onValueChange={(value: 'basic' | 'activity') => setFormData(prev => ({ ...prev, subjectType: value }))}
+                      dir="rtl"
+                    >
+                      <SelectTrigger className="text-right">
+                        <SelectValue placeholder="اختر نوع المادة" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="basic">أساسية</SelectItem>
+                        <SelectItem value="activity">نشاط</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>الحالة</Label>
+                    <Select
+                      value={formData.status}
+                      onValueChange={(value: 'active' | 'inactive') => setFormData(prev => ({ ...prev, status: value }))}
+                      dir="rtl"
+                    >
+                      <SelectTrigger className="text-right">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">نشط</SelectItem>
+                        <SelectItem value="inactive">غير نشط</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={createMutation.isPending || updateMutation.isPending}
+                  >
+                    {createMutation.isPending || updateMutation.isPending ? "جاري الحفظ..." : "حفظ"}
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
+      </div>
 
       {/* Filters */}
       <div className="bg-card rounded-xl p-6 shadow-sm border border-border mb-6" dir="rtl">
@@ -262,7 +271,7 @@ export default function SubjectsPage() {
               className="pr-10 text-right"
             />
           </div>
-          <Select value={filterGrade} onValueChange={setFilterGrade}>
+          <Select value={filterGrade} onValueChange={setFilterGrade} dir="rtl">
             <SelectTrigger className="text-right">
               <SelectValue placeholder="تصفية حسب المرحلة" />
             </SelectTrigger>
@@ -274,7 +283,7 @@ export default function SubjectsPage() {
               <SelectItem value="Fourth Grade">الصف الرابع</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={filterType} onValueChange={setFilterType}>
+          <Select value={filterType} onValueChange={setFilterType} dir="rtl">
             <SelectTrigger className="text-right">
               <SelectValue placeholder="تصفية حسب النوع" />
             </SelectTrigger>
@@ -289,7 +298,7 @@ export default function SubjectsPage() {
 
       {/* Subjects Grid */}
       <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-        <div className="flex items-center justify-end gap-2 mb-6">
+        <div className="flex items-center justify-start gap-2 mb-6">
           <BookOpen className="w-5 h-5 text-primary" />
           <h3 className="text-lg font-bold text-foreground">قائمة المواد</h3>
         </div>
@@ -306,8 +315,13 @@ export default function SubjectsPage() {
               <div
                 key={subject.id}
                 className="bg-secondary/30 border border-border rounded-xl p-4 hover:shadow-md transition-shadow"
+                dir="rtl"
               >
                 <div className="flex items-start justify-between mb-3">
+                  <div className="text-right">
+                    <h4 className="font-bold text-foreground">{subject.name}</h4>
+                    <p className="text-sm text-muted-foreground">{subject.code}</p>
+                  </div>
                   <div className="flex gap-2">
                     <button
                       onClick={() => deleteMutation.mutate(subject.id)}
@@ -322,12 +336,12 @@ export default function SubjectsPage() {
                       <Pencil className="w-4 h-4" />
                     </button>
                   </div>
-                  <div className="text-right">
-                    <h4 className="font-bold text-foreground">{subject.name}</h4>
-                    <p className="text-sm text-muted-foreground">{subject.code}</p>
-                  </div>
                 </div>
                 <div className="flex items-center justify-between text-sm gap-2">
+                  <div className="text-right">
+                    <p className="text-muted-foreground">{subject.gradeLevel}</p>
+                    <p className="text-accent">درجة النجاح: {subject.passingGrade}</p>
+                  </div>
                   <div className="flex items-center gap-2">
                     <span className={`px-2 py-1 rounded-full text-xs ${subject.status === 'active'
                       ? 'bg-success/10 text-success'
@@ -341,10 +355,6 @@ export default function SubjectsPage() {
                       }`}>
                       {subject.subjectType === 'activity' ? 'نشاط' : 'أساسية'}
                     </span>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-muted-foreground">{subject.gradeLevel}</p>
-                    <p className="text-accent">درجة النجاح: {subject.passingGrade}</p>
                   </div>
                 </div>
               </div>

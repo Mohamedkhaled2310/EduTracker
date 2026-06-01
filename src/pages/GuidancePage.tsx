@@ -25,33 +25,34 @@ export default function GuidancePage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8">
-
-        <div className="flex items-center justify-start gap-3 mb-2">
-          <Heart className="w-8 h-8 text-accent" />
-          <h1 className="text-2xl font-bold text-foreground">لوحة التوجيه والإرشاد</h1>
+      <div className="mb-8" dir="rtl">
+        <div className="flex flex-col gap-3 mb-6">
+          <div className="flex items-center gap-3">
+            <Heart className="w-8 h-8 text-accent" />
+            <h1 className="text-2xl font-bold text-foreground">لوحة التوجيه والإرشاد</h1>
+          </div>
+          <p className="text-muted-foreground">
+            الرعاية السلوكية والأكاديمية - بإشراف: <span className="text-accent">اليازية البلوشي</span>
+          </p>
         </div>
-        <p className="text-muted-foreground text-right">
-          الرعاية السلوكية والأكاديمية - بإشراف: <span className="text-accent">اليازية البلوشي</span>
-        </p>
-      </div>
 
-      {/* Tabs */}
-      <div className="flex gap-2 mb-6 justify-end">
-        <Button
-          variant={activeTab === "studentGuide" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setActiveTab("studentGuide")}
-        >
-          دليل الطلاب
-        </Button>
-        <Button
-          variant={activeTab === "overview" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setActiveTab("overview")}
-        >
-          نظرة عامة
-        </Button>
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6">
+          <Button
+            variant={activeTab === "overview" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setActiveTab("overview")}
+          >
+            نظرة عامة
+          </Button>
+          <Button
+            variant={activeTab === "studentGuide" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setActiveTab("studentGuide")}
+          >
+            دليل الطلاب
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}

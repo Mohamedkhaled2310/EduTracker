@@ -148,116 +148,122 @@ export default function OperationalPlanPage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8 flex flex-col items-end gap-3">
-        <h1 className="text-2xl font-bold text-foreground text-right">الخطة التشغيلية السنوية</h1>
-        <p className="text-muted-foreground text-right">متابعة الأهداف الإستراتيجية والمؤشرات التشغيلية لمدرسة المستقبل</p>
-        
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="gap-2 self-end">
-              <Plus className="w-4 h-4" />
-              إضافة هدف تشغيلي
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-md" dir="rtl">
-            <DialogHeader>
-              <DialogTitle className="text-right">إضافة هدف تشغيلي جديد</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleAddGoal} className="space-y-4 text-right">
-              <div className="space-y-2">
-                <Label>عنوان الهدف التشغيلي *</Label>
-                <Input
-                  value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                  placeholder="مثال: رفع نسبة جودة التعلم الرقمي..."
-                  className="text-right"
-                />
-              </div>
+      <div className="mb-8" dir="rtl">
+        <div className="flex flex-col gap-3 mb-6">
+          <h1 className="text-2xl font-bold text-foreground">الخطة التشغيلية السنوية</h1>
+          <p className="text-muted-foreground">متابعة الأهداف الإستراتيجية والمؤشرات التشغيلية لمدرسة المستقبل</p>
+          
+          <div className="flex items-center gap-2 flex-wrap">
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="gap-2">
+                  <Plus className="w-4 h-4" />
+                  إضافة هدف تشغيلي
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md" dir="rtl">
+                <DialogHeader>
+                  <DialogTitle className="text-right">إضافة هدف تشغيلي جديد</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleAddGoal} className="space-y-4 text-right">
+                  <div className="space-y-2">
+                    <Label>عنوان الهدف التشغيلي *</Label>
+                    <Input
+                      value={formData.title}
+                      onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                      placeholder="مثال: رفع نسبة جودة التعلم الرقمي..."
+                      className="text-right"
+                    />
+                  </div>
 
-              <div className="space-y-2">
-                <Label>الركيزة الإستراتيجية *</Label>
-                <Select
-                  value={formData.pillar}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, pillar: value }))}
-                >
-                  <SelectTrigger className="text-right">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="التميز الأكاديمي">التميز الأكاديمي</SelectItem>
-                    <SelectItem value="التحول الرقمي الذكي">التحول الرقمي الذكي</SelectItem>
-                    <SelectItem value="التطوير المهني">التطوير المهني</SelectItem>
-                    <SelectItem value="الشراكة المجتمعية">الشراكة المجتمعية</SelectItem>
-                    <SelectItem value="البيئة Mدرسية">البيئة المدرسية</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                  <div className="space-y-2">
+                    <Label>الركيزة الإستراتيجية *</Label>
+                    <Select
+                      value={formData.pillar}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, pillar: value }))}
+                      dir="rtl"
+                    >
+                      <SelectTrigger className="text-right">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="التميز الأكاديمي">التميز الأكاديمي</SelectItem>
+                        <SelectItem value="التحول الرقمي الذكي">التحول الرقمي الذكي</SelectItem>
+                        <SelectItem value="التطوير المهني">التطوير المهني</SelectItem>
+                        <SelectItem value="الشراكة المجتمعية">الشراكة المجتمعية</SelectItem>
+                        <SelectItem value="البيئة Mدرسية">البيئة المدرسية</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>المستهدف الرقمي</Label>
-                  <Input
-                    type="number"
-                    value={formData.targetPercentage}
-                    onChange={(e) => setFormData(prev => ({ ...prev, targetPercentage: parseInt(e.target.value) }))}
-                    className="text-right"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>الإنجاز الحالي</Label>
-                  <Input
-                    type="number"
-                    value={formData.currentPercentage}
-                    onChange={(e) => setFormData(prev => ({ ...prev, currentPercentage: parseInt(e.target.value) }))}
-                    className="text-right"
-                  />
-                </div>
-              </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>المستهدف الرقمي</Label>
+                      <Input
+                        type="number"
+                        value={formData.targetPercentage}
+                        onChange={(e) => setFormData(prev => ({ ...prev, targetPercentage: parseInt(e.target.value) }))}
+                        className="text-right"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>الإنجاز الحالي</Label>
+                      <Input
+                        type="number"
+                        value={formData.currentPercentage}
+                        onChange={(e) => setFormData(prev => ({ ...prev, currentPercentage: parseInt(e.target.value) }))}
+                        className="text-right"
+                      />
+                    </div>
+                  </div>
 
-              <div className="space-y-2">
-                <Label>المسؤول عن التنفيذ *</Label>
-                <Input
-                  value={formData.owner}
-                  onChange={(e) => setFormData(prev => ({ ...prev, owner: e.target.value }))}
-                  placeholder="مثال: أ. هند العامري"
-                  className="text-right"
-                />
-              </div>
+                  <div className="space-y-2">
+                    <Label>المسؤول عن التنفيذ *</Label>
+                    <Input
+                      value={formData.owner}
+                      onChange={(e) => setFormData(prev => ({ ...prev, owner: e.target.value }))}
+                      placeholder="مثال: أ. هند العامري"
+                      className="text-right"
+                    />
+                  </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>الحالة</Label>
-                  <Select
-                    value={formData.status}
-                    onValueChange={(value: "completed" | "in_progress" | "delayed") => setFormData(prev => ({ ...prev, status: value }))}
-                  >
-                    <SelectTrigger className="text-right">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="in_progress">قيد التنفيذ</SelectItem>
-                      <SelectItem value="completed">مكتمل</SelectItem>
-                      <SelectItem value="delayed">متأخر</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>تاريخ الانجاز المستهدف</Label>
-                  <Input
-                    type="date"
-                    value={formData.deadline}
-                    onChange={(e) => setFormData(prev => ({ ...prev, deadline: e.target.value }))}
-                    className="text-right"
-                  />
-                </div>
-              </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>الحالة</Label>
+                      <Select
+                        value={formData.status}
+                        onValueChange={(value: "completed" | "in_progress" | "delayed") => setFormData(prev => ({ ...prev, status: value }))}
+                        dir="rtl"
+                      >
+                        <SelectTrigger className="text-right">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="in_progress">قيد التنفيذ</SelectItem>
+                          <SelectItem value="completed">مكتمل</SelectItem>
+                          <SelectItem value="delayed">متأخر</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>تاريخ الانجاز المستهدف</Label>
+                      <Input
+                        type="date"
+                        value={formData.deadline}
+                        onChange={(e) => setFormData(prev => ({ ...prev, deadline: e.target.value }))}
+                        className="text-right"
+                      />
+                    </div>
+                  </div>
 
-              <Button type="submit" className="w-full mt-4">
-                حفظ الهدف التشغيلي
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+                  <Button type="submit" className="w-full mt-4">
+                    حفظ الهدف التشغيلي
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
       </div>
 
       {/* KPI Stats Cards */}
@@ -281,7 +287,7 @@ export default function OperationalPlanPage() {
             />
           </div>
 
-          <Select value={filterPillar} onValueChange={setFilterPillar}>
+          <Select value={filterPillar} onValueChange={setFilterPillar} dir="rtl">
             <SelectTrigger className="text-right">
               <SelectValue placeholder="تصفية حسب الركيزة" />
             </SelectTrigger>
@@ -295,7 +301,7 @@ export default function OperationalPlanPage() {
             </SelectContent>
           </Select>
 
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
+          <Select value={filterStatus} onValueChange={setFilterStatus} dir="rtl">
             <SelectTrigger className="text-right">
               <SelectValue placeholder="تصفية حسب الحالة" />
             </SelectTrigger>

@@ -45,7 +45,7 @@ export function StudentFilters({
         <div className="flex items-center gap-3 flex-wrap">
             {/* Grade Filter */}
             <div className="flex items-center gap-2">
-                <Select value={selectedGrade} onValueChange={onGradeChange}>
+                <Select value={selectedGrade} onValueChange={onGradeChange} dir="rtl">
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="اختر الصف" />
                     </SelectTrigger>
@@ -62,7 +62,7 @@ export function StudentFilters({
 
             {/* Category Filter */}
             <div className="flex items-center gap-2">
-                <Select value={selectedCategory} onValueChange={onCategoryChange}>
+                <Select value={selectedCategory} onValueChange={onCategoryChange} dir="rtl">
                     <SelectTrigger className="w-[200px]">
                         <SelectValue placeholder="اختر الفئة" />
                     </SelectTrigger>

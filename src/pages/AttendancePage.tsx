@@ -193,31 +193,24 @@ export default function AttendancePage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8">
-        <div className="flex flex-col md:flex-row-reverse md:items-center justify-between gap-4 mb-4">
-          <div className="text-right flex-1">
+      <div className="mb-8" dir="rtl">
+        <div className="flex flex-col gap-3 mb-6">
+          <div>
             <h1 className="text-2xl font-bold text-foreground">سجل الحضور والغياب</h1>
             <p className="text-muted-foreground">تسجيل ومتابعة حضور الطلاب</p>
           </div>
-          {activeTab === "record" && (
-            <Button onClick={handleSaveAttendance} disabled={recordMutation.isPending} className="gap-2 self-end">
-              <Save className="w-4 h-4" />
-              {recordMutation.isPending ? "جاري الحفظ..." : "حفظ الحضور"}
-            </Button>
-          )}
+          <div className="flex items-center gap-2 flex-wrap">
+            {activeTab === "record" && (
+              <Button onClick={handleSaveAttendance} disabled={recordMutation.isPending} className="gap-2">
+                <Save className="w-4 h-4" />
+                {recordMutation.isPending ? "جاري الحفظ..." : "حفظ الحضور"}
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex gap-2 justify-end">
-          <Button
-            variant={activeTab === "categories" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setActiveTab("categories")}
-            className="gap-2"
-          >
-            <ListFilter className="w-4 h-4" />
-            سجل الحضور والغياب
-          </Button>
+        <div className="flex gap-2">
           <Button
             variant={activeTab === "record" ? "default" : "outline"}
             size="sm"
@@ -226,6 +219,15 @@ export default function AttendancePage() {
           >
             <Calendar className="w-4 h-4" />
             تسجيل الحضور
+          </Button>
+          <Button
+            variant={activeTab === "categories" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setActiveTab("categories")}
+            className="gap-2"
+          >
+            <ListFilter className="w-4 h-4" />
+            سجل الحضور والغياب
           </Button>
         </div>
       </div>
@@ -250,7 +252,7 @@ export default function AttendancePage() {
               {/* Day Filter */}
               <div className="space-y-2">
                 <Label className="block text-right">اليوم</Label>
-                <Select value={dayOfWeekFilter} onValueChange={handleDayChange}>
+                <Select value={dayOfWeekFilter} onValueChange={handleDayChange} dir="rtl">
                   <SelectTrigger className="text-right">
                     <SelectValue placeholder="اختر اليوم" />
                   </SelectTrigger>
@@ -270,7 +272,7 @@ export default function AttendancePage() {
               {/* Grade Filter */}
               <div className="space-y-2">
                 <Label className="block text-right">الصف</Label>
-                <Select value={selectedGrade} onValueChange={setSelectedGrade}>
+                <Select value={selectedGrade} onValueChange={setSelectedGrade} dir="rtl">
                   <SelectTrigger className="text-right">
                     <SelectValue placeholder="اختر الصف" />
                   </SelectTrigger>
@@ -286,7 +288,7 @@ export default function AttendancePage() {
               {/* Section Filter */}
               <div className="space-y-2">
                 <Label className="block text-right">الفصل</Label>
-                <Select value={selectedClass} onValueChange={setSelectedClass}>
+                <Select value={selectedClass} onValueChange={setSelectedClass} dir="rtl">
                   <SelectTrigger className="text-right">
                     <SelectValue placeholder="اختر الفصل" />
                   </SelectTrigger>
@@ -301,7 +303,7 @@ export default function AttendancePage() {
               {/* Status Type Filter */}
               <div className="space-y-2">
                 <Label className="block text-right">نوع الحالة</Label>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <Select value={statusFilter} onValueChange={setStatusFilter} dir="rtl">
                   <SelectTrigger className="text-right">
                     <SelectValue placeholder="تصفية حسب الحالة" />
                   </SelectTrigger>

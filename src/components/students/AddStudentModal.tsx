@@ -112,6 +112,10 @@ export function AddStudentModal({ open, onOpenChange }: AddStudentModalProps) {
             <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-0">
                 <DialogHeader className="bg-primary p-6 text-primary-foreground sticky top-0 z-10">
                     <div className="flex items-center justify-between">
+                        <DialogTitle className="text-xl font-bold flex items-center gap-2">
+                            <UserPlus className="w-6 h-6" />
+                            إضافة طالب جديد
+                        </DialogTitle>
                         <Button
                             variant="ghost"
                             size="icon"
@@ -120,10 +124,6 @@ export function AddStudentModal({ open, onOpenChange }: AddStudentModalProps) {
                         >
                             <X className="w-5 h-5" />
                         </Button>
-                        <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                            <UserPlus className="w-6 h-6" />
-                            إضافة طالب جديد
-                        </DialogTitle>
                     </div>
                 </DialogHeader>
 
@@ -381,14 +381,6 @@ export function AddStudentModal({ open, onOpenChange }: AddStudentModalProps) {
 
                     {/* Form Actions */}
                     <div className="flex gap-3 justify-start pt-4 border-t">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={handleClose}
-                            disabled={createMutation.isPending}
-                        >
-                            إلغاء
-                        </Button>
                         <Button type="submit" disabled={createMutation.isPending}>
                             {createMutation.isPending ? (
                                 <>
@@ -401,6 +393,14 @@ export function AddStudentModal({ open, onOpenChange }: AddStudentModalProps) {
                                     إضافة الطالب
                                 </>
                             )}
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleClose}
+                            disabled={createMutation.isPending}
+                        >
+                            إلغاء
                         </Button>
                     </div>
                 </form>

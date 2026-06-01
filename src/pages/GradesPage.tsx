@@ -108,151 +108,162 @@ export default function GradesPage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8 flex flex-col items-end gap-3">
-        <h1 className="text-2xl font-bold text-foreground text-right">سجل الدرجات</h1>
-        <p className="text-muted-foreground text-right">تسجيل ومتابعة درجات الطلاب</p>
-        <Dialog
-          open={isDialogOpen}
-          onOpenChange={(open) => {
-            setIsDialogOpen(open);
-            if (open && selectedStudent) {
-              setFormData(prev => ({
-                ...prev,
-                studentId: selectedStudent
-              }));
-            }
-            if (!open) resetForm();
-          }}
-        >
-          <DialogTrigger asChild>
-            <Button className="gap-2 self-end" disabled={!selectedStudent}>
-              <Plus className="w-4 h-4" />
-              إضافة درجة
-            </Button>
-          </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle className="text-right">تسجيل درجة جديدة</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label>المادة *</Label>
-                  <Select
-                    value={formData.subjectId}
-                    onValueChange={(value) => {
-                      console.log(value);
-                      setFormData(prev => ({ ...prev, subjectId: value }));
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="اختر المادة" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {subjects.map((subject) => (
-                        <SelectItem key={subject.id} value={subject.id.toString()}>
-                          {subject.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>نوع التقييم *</Label>
-                  <Select
-                    value={formData.type}
-                    onValueChange={(value: 'homework' | 'participation' | 'midterm' | 'final' | 'diagnostic' | 'formative' | 'finalTest' | 'semesterGrade') =>
-                      setFormData(prev => ({ ...prev, type: value }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="homework">واجب منزلي</SelectItem>
-                      <SelectItem value="participation">مشاركة</SelectItem>
-                      <SelectItem value="midterm">اختبار نصفي</SelectItem>
-                      <SelectItem value="final">اختبار نهائي</SelectItem>
-                      <SelectItem value="diagnostic">اختبار تشخيصي</SelectItem>
-                      <SelectItem value="formative">اختبار تكويني</SelectItem>
-                      <SelectItem value="finalTest">اختبار النهائي</SelectItem>
-                      <SelectItem value="semesterGrade">درجة الفصل</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
+      <div className="mb-8" dir="rtl">
+        <div className="flex flex-col gap-3 mb-6">
+          <h1 className="text-2xl font-bold text-foreground">سجل الدرجات</h1>
+          <p className="text-muted-foreground">تسجيل ومتابعة درجات الطلاب</p>
+          
+          <div className="flex items-center gap-2 flex-wrap">
+            <Dialog
+              open={isDialogOpen}
+              onOpenChange={(open) => {
+                setIsDialogOpen(open);
+                if (open && selectedStudent) {
+                  setFormData(prev => ({
+                    ...prev,
+                    studentId: selectedStudent
+                  }));
+                }
+                if (!open) resetForm();
+              }}
+            >
+              <DialogTrigger asChild>
+                <Button className="gap-2" disabled={!selectedStudent}>
+                  <Plus className="w-4 h-4" />
+                  إضافة درجة
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md" dir="rtl">
+                <DialogHeader>
+                  <DialogTitle className="text-right">تسجيل درجة جديدة</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4 text-right">
                   <div className="space-y-2">
-                    <Label>الفصل الدراسي</Label>
+                    <Label>المادة *</Label>
                     <Select
-                      value={formData.semester.toString()}
-                      onValueChange={(value) => setFormData(prev => ({ ...prev, semester: parseInt(value) }))}
+                      value={formData.subjectId}
+                      onValueChange={(value) => {
+                        console.log(value);
+                        setFormData(prev => ({ ...prev, subjectId: value }));
+                      }}
+                      dir="rtl"
                     >
-                      <SelectTrigger>
-                        <SelectValue />
+                      <SelectTrigger className="text-right">
+                        <SelectValue placeholder="اختر المادة" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="1">الفصل الأول</SelectItem>
-                        <SelectItem value="2">الفصل الثاني</SelectItem>
+                        {subjects.map((subject) => (
+                          <SelectItem key={subject.id} value={subject.id.toString()}>
+                            {subject.name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label>السنة الدراسية</Label>
-                    <Input
-                      value={formData.year}
-                      onChange={(e) => setFormData(prev => ({ ...prev, year: e.target.value }))}
-                      placeholder="2024-2025"
-                      dir="ltr"
-                    />
+                    <Label>نوع التقييم *</Label>
+                    <Select
+                      value={formData.type}
+                      onValueChange={(value: 'homework' | 'participation' | 'midterm' | 'final' | 'diagnostic' | 'formative' | 'finalTest' | 'semesterGrade') =>
+                        setFormData(prev => ({ ...prev, type: value }))
+                      }
+                      dir="rtl"
+                    >
+                      <SelectTrigger className="text-right">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="homework">واجب منزلي</SelectItem>
+                        <SelectItem value="participation">مشاركة</SelectItem>
+                        <SelectItem value="midterm">اختبار نصفي</SelectItem>
+                        <SelectItem value="final">اختبار نهائي</SelectItem>
+                        <SelectItem value="diagnostic">اختبار تشخيصي</SelectItem>
+                        <SelectItem value="formative">اختبار تكويني</SelectItem>
+                        <SelectItem value="finalTest">اختبار النهائي</SelectItem>
+                        <SelectItem value="semesterGrade">درجة الفصل</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>الدرجة</Label>
-                    <Input
-                      type="number"
-                      value={formData.score}
-                      onChange={(e) => setFormData(prev => ({ ...prev, score: parseInt(e.target.value) }))}
-                      min={0}
-                      max={formData.maxScore}
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>الفصل الدراسي</Label>
+                      <Select
+                        value={formData.semester.toString()}
+                        onValueChange={(value) => setFormData(prev => ({ ...prev, semester: parseInt(value) }))}
+                        dir="rtl"
+                      >
+                        <SelectTrigger className="text-right">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">الفصل الأول</SelectItem>
+                          <SelectItem value="2">الفصل الثاني</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>السنة الدراسية</Label>
+                      <Input
+                        value={formData.year}
+                        onChange={(e) => setFormData(prev => ({ ...prev, year: e.target.value }))}
+                        placeholder="2024-2025"
+                        dir="ltr"
+                        className="text-right"
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label>الدرجة القصوى</Label>
-                    <Input
-                      type="number"
-                      value={formData.maxScore}
-                      onChange={(e) => setFormData(prev => ({ ...prev, maxScore: parseInt(e.target.value) }))}
-                      min={1}
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>الدرجة</Label>
+                      <Input
+                        type="number"
+                        value={formData.score}
+                        onChange={(e) => setFormData(prev => ({ ...prev, score: parseInt(e.target.value) }))}
+                        min={0}
+                        max={formData.maxScore}
+                        className="text-right"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>الدرجة القصوى</Label>
+                      <Input
+                        type="number"
+                        value={formData.maxScore}
+                        onChange={(e) => setFormData(prev => ({ ...prev, maxScore: parseInt(e.target.value) }))}
+                        min={1}
+                        className="text-right"
+                      />
+                    </div>
                   </div>
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={
-                    recordMutation.isPending ||
-                    formData.studentId == null ||
-                    formData.subjectId == null
-                  }
-                >
-                  {recordMutation.isPending ? "جاري الحفظ..." : "حفظ الدرجة"}
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={
+                      recordMutation.isPending ||
+                      formData.studentId == null ||
+                      formData.subjectId == null
+                    }
+                  >
+                    {recordMutation.isPending ? "جاري الحفظ..." : "حفظ الدرجة"}
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" dir="rtl">
         {/* Students List */}
         <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-          <div className="flex items-center justify-end gap-2 mb-4">
+          <div className="flex items-center justify-start gap-2 mb-4">
             <h3 className="text-lg font-bold text-foreground">الطلاب</h3>
             <User className="w-5 h-5 text-primary" />
           </div>
 
           <div className="space-y-3 mb-4">
-            <Select value={gradeLevel} onValueChange={setGradeLevel}>
-              <SelectTrigger>
+            <Select value={gradeLevel} onValueChange={setGradeLevel} dir="rtl">
+              <SelectTrigger className="text-right">
                 <SelectValue placeholder="تصفية حسب الصف" />
               </SelectTrigger>
               <SelectContent>
@@ -270,7 +281,7 @@ export default function GradesPage() {
                 placeholder="بحث عن طالب..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pr-10"
+                className="pr-10 text-right"
               />
             </div>
           </div>
@@ -307,13 +318,13 @@ export default function GradesPage() {
 
         {/* Grades Display */}
         <div className="lg:col-span-2 bg-card rounded-xl p-6 shadow-sm border border-border">
-          <div className="flex flex-col md:flex-row-reverse md:items-center justify-between gap-4 mb-6">
-            <div className="flex items-center gap-2 justify-end">
-              <h3 className="text-lg font-bold text-foreground text-right">سجل الدرجات</h3>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6" dir="rtl">
+            <div className="flex items-center gap-2">
               <GraduationCap className="w-5 h-5 text-primary" />
+              <h3 className="text-lg font-bold text-foreground">سجل الدرجات</h3>
             </div>
-            <div className="flex gap-3 justify-end" dir="rtl">
-              <Select value={performanceRange} onValueChange={setPerformanceRange}>
+            <div className="flex gap-3">
+              <Select value={performanceRange} onValueChange={setPerformanceRange} dir="rtl">
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="تصفية حسب النسبة" />
                 </SelectTrigger>

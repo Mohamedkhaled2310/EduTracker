@@ -15,11 +15,11 @@ export default function AssistantPage() {
         <div className="bg-card rounded-xl shadow-sm border border-border flex-1 flex flex-col overflow-hidden">
           {/* Header */}
           <div className="p-4 border-b border-border flex items-center justify-between">
-            <span className="text-sm text-muted-foreground bg-secondary px-3 py-1 rounded-full">Edutracker AI</span>
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-bold text-foreground">المحادثة مع المحلل الذكي</h2>
               <MessageCircle className="w-5 h-5 text-primary" />
             </div>
+            <span className="text-sm text-muted-foreground bg-secondary px-3 py-1 rounded-full">Edutracker AI</span>
           </div>
 
           {/* Messages */}
