@@ -56,10 +56,10 @@ export function ParentCommunication() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" dir="rtl">
       {/* Send New Message */}
       <Card>
-        <CardHeader className="flex flex-row items-center justify-end gap-2">
+        <CardHeader className="flex flex-row items-center justify-start gap-2">
           <CardTitle className="text-lg">إرسال رسالة جديدة</CardTitle>
           <Mail className="w-5 h-5 text-muted-foreground" />
         </CardHeader>
@@ -67,7 +67,7 @@ export function ParentCommunication() {
           <div className="space-y-4">
             <div className="text-right">
               <p className="text-sm text-muted-foreground mb-2">قوالب جاهزة</p>
-              <div className="flex flex-wrap gap-2 justify-end">
+              <div className="flex flex-wrap gap-2 justify-start">
                 {messageTemplates.map((template) => (
                   <Button
                     key={template.id}
@@ -99,7 +99,7 @@ export function ParentCommunication() {
 
       {/* Communication History */}
       <Card>
-        <CardHeader className="flex flex-row items-center justify-end gap-2">
+        <CardHeader className="flex flex-row items-center justify-start gap-2">
           <CardTitle className="text-lg">سجل التواصل الحديث</CardTitle>
           <Phone className="w-5 h-5 text-muted-foreground" />
         </CardHeader>
@@ -108,31 +108,31 @@ export function ParentCommunication() {
             <table className="w-full">
               <thead className="bg-muted/50">
                 <tr>
-                  <th className="py-3 px-4 text-right text-sm font-medium text-muted-foreground">الحالة</th>
-                  <th className="py-3 px-4 text-right text-sm font-medium text-muted-foreground">الرسالة</th>
-                  <th className="py-3 px-4 text-center text-sm font-medium text-muted-foreground">النوع</th>
-                  <th className="py-3 px-4 text-right text-sm font-medium text-muted-foreground">اسم الطالب</th>
                   <th className="py-3 px-4 text-right text-sm font-medium text-muted-foreground">ولي الأمر</th>
+                  <th className="py-3 px-4 text-right text-sm font-medium text-muted-foreground">اسم الطالب</th>
+                  <th className="py-3 px-4 text-center text-sm font-medium text-muted-foreground">النوع</th>
+                  <th className="py-3 px-4 text-right text-sm font-medium text-muted-foreground">الرسالة</th>
+                  <th className="py-3 px-4 text-right text-sm font-medium text-muted-foreground">الحالة</th>
                 </tr>
               </thead>
               <tbody>
                 {communicationHistory.map((record, index) => (
                   <tr key={index} className="border-t border-border">
-                    <td className="py-3 px-4 text-right">
-                      <Badge className="bg-success/10 text-success">
-                        {record.status}
-                      </Badge>
-                    </td>
-                    <td className="py-3 px-4 text-right text-sm text-muted-foreground">
-                      {record.message}
-                    </td>
+                    <td className="py-3 px-4 text-right text-sm font-medium">{record.parentName}</td>
+                    <td className="py-3 px-4 text-right text-sm">{record.studentName}</td>
                     <td className="py-3 px-4 text-center">
                       <Badge variant="outline">
                         {record.type}
                       </Badge>
                     </td>
-                    <td className="py-3 px-4 text-right text-sm">{record.studentName}</td>
-                    <td className="py-3 px-4 text-right text-sm font-medium">{record.parentName}</td>
+                    <td className="py-3 px-4 text-right text-sm text-muted-foreground">
+                      {record.message}
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      <Badge className="bg-success/10 text-success">
+                        {record.status}
+                      </Badge>
+                    </td>
                   </tr>
                 ))}
               </tbody>

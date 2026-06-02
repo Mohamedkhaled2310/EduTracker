@@ -12,11 +12,22 @@ import { useToast } from "@/hooks/use-toast";
 import { gradesApi, studentsApi, subjectsApi } from "@/lib/api";
 import type { RecordGradeRequest } from "@/lib/api/types";
 
+const getSectionNumber = (section: string) => {
+  if (!section) return '';
+  const clean = section.trim().toUpperCase();
+  if (clean === 'A' || clean === 'أ' || clean.endsWith('- A') || clean.endsWith('- أ') || clean.endsWith('A') || clean.endsWith('- 1') || clean.endsWith('1')) return '1';
+  if (clean === 'B' || clean === 'ب' || clean.endsWith('- B') || clean.endsWith('- ب') || clean.endsWith('B') || clean.endsWith('- 2') || clean.endsWith('2')) return '2';
+  if (clean === 'C' || clean === 'ج' || clean.endsWith('- C') || clean.endsWith('- ج') || clean.endsWith('C') || clean.endsWith('- 3') || clean.endsWith('3')) return '3';
+  if (clean === 'D' || clean === 'د' || clean.endsWith('- D') || clean.endsWith('- د') || clean.endsWith('D') || clean.endsWith('- 4') || clean.endsWith('4')) return '4';
+  return section;
+};
+
 export default function GradesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [gradeLevel, setGradeLevel] = useState<string>("");
+  const [sectionLevel, setSectionLevel] = useState<string>("");
   const [performanceRange, setPerformanceRange] = useState<string>("");
 
   const [formData, setFormData] = useState<Omit<RecordGradeRequest, 'studentId' | 'subjectId'> & { studentId: string | null; subjectId: string | null }>({
@@ -102,7 +113,13 @@ export default function GradesPage() {
   };
 
 
-  const students = studentsData?.data?.students || [];
+  const students = (studentsData?.data?.students || []).filter(student => {
+    if (sectionLevel && sectionLevel !== 'all') {
+      const secNum = getSectionNumber(student.section || student.class);
+      return secNum === sectionLevel;
+    }
+    return true;
+  });
   const subjects = subjectsData?.data || [];
   const studentGrades = gradesData?.data;
 
@@ -275,6 +292,19 @@ export default function GradesPage() {
               </SelectContent>
             </Select>
 
+            <Select value={sectionLevel} onValueChange={setSectionLevel} dir="rtl">
+              <SelectTrigger className="text-right">
+                <SelectValue placeholder="تصفية حسب الفصل" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">جميع الفصول</SelectItem>
+                <SelectItem value="1">فصل 1</SelectItem>
+                <SelectItem value="2">فصل 2</SelectItem>
+                <SelectItem value="3">فصل 3</SelectItem>
+                <SelectItem value="4">فصل 4</SelectItem>
+              </SelectContent>
+            </Select>
+
             <div className="relative">
               <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -308,7 +338,7 @@ export default function GradesPage() {
                 >
                   <p className="font-medium">{student.name}</p>
                   <p className={`text-xs ${selectedStudent === student.id ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-                    {student.studentId} - {student.grade}
+                    {student.studentId} - {student.grade} - فصل {getSectionNumber(student.section || student.class)}
                   </p>
                 </button>
               ))}
@@ -349,7 +379,7 @@ export default function GradesPage() {
                 <Skeleton key={i} className="h-16 rounded-lg" />
               ))}
             </div>
-          ) : studentGrades ? (
+          ) : (studentGrades && studentGrades.subjects && studentGrades.subjects.length > 0) ? (
             <div>
               {/* Student Info */}
               <div className="bg-secondary/30 rounded-lg p-4 mb-6 text-right">
@@ -437,7 +467,7 @@ export default function GradesPage() {
           ) : (
             <div className="text-center py-12">
               <GraduationCap className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">لا توجد درجات مسجلة لهذا الطالب</p>
+              <p className="text-muted-foreground">لم يتم اضافة درجات لهذا الطالب</p>
             </div>
           )}
         </div>
