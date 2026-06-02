@@ -328,7 +328,7 @@ export default function AttendancePage() {
 
           {/* Attendance Table - dir="rtl" for right-side list and left-side buttons */}
           <div className="bg-card rounded-xl p-6 shadow-sm border border-border" dir="rtl">
-            <div className="flex items-center justify-end gap-2 mb-6">
+            <div className="flex items-center justify-start gap-2 mb-6">
               <h3 className="text-lg font-bold text-foreground">قائمة الطلاب</h3>
               <Calendar className="w-5 h-5 text-primary" />
             </div>
